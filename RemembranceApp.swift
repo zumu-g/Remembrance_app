@@ -2533,7 +2533,7 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
 @main
 struct RemembranceApp: App {
     @StateObject private var photoStore = PhotoStore()
-    @StateObject private var simpleSettings = SimpleSettingsManager()
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     @State private var showingDailyMemory = false
     @State private var showLaunchScreen = true
     @State private var showPrivacyScreen = false
@@ -2559,7 +2559,7 @@ struct RemembranceApp: App {
                             }
 
                             // Check if onboarding is needed
-                            if !simpleSettings.hasCompletedOnboarding {
+                            if !hasCompletedOnboarding {
                                 showOnboarding = true
                             }
 
@@ -2581,9 +2581,8 @@ struct RemembranceApp: App {
                             globalTodaysPhotoManager.forceRefreshPhoto(from: photoStore)
                         }
                         .fullScreenCover(isPresented: $showOnboarding) {
-                            EnhancedOnboardingView()
+                            OnboardingView()
                                 .environmentObject(photoStore)
-                                .environmentObject(simpleSettings)
                         }
                     
                     // Privacy overlay when app becomes inactive
