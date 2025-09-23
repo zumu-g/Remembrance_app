@@ -2533,9 +2533,11 @@ class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
 @main
 struct RemembranceApp: App {
     @StateObject private var photoStore = PhotoStore()
+    @StateObject private var simpleSettings = SimpleSettingsManager()
     @State private var showingDailyMemory = false
     @State private var showLaunchScreen = true
     @State private var showPrivacyScreen = false
+    @State private var showOnboarding = false
     @Environment(\.scenePhase) var scenePhase
     
     var body: some Scene {
@@ -2555,7 +2557,12 @@ struct RemembranceApp: App {
                             if !photoStore.images.isEmpty {
                                 globalTodaysPhotoManager.loadTodaysPhoto(from: photoStore)
                             }
-                            
+
+                            // Check if onboarding is needed
+                            if !simpleSettings.hasCompletedOnboarding {
+                                showOnboarding = true
+                            }
+
                             withAnimation(.easeInOut(duration: 0.3)) {
                                 showLaunchScreen = false
                             }
@@ -2572,6 +2579,11 @@ struct RemembranceApp: App {
                             print("Received daily reminder notification tap - refreshing today's photo")
                             // Force refresh the photo to ensure today's photo is shown
                             globalTodaysPhotoManager.forceRefreshPhoto(from: photoStore)
+                        }
+                        .fullScreenCover(isPresented: $showOnboarding) {
+                            EnhancedOnboardingView()
+                                .environmentObject(photoStore)
+                                .environmentObject(simpleSettings)
                         }
                     
                     // Privacy overlay when app becomes inactive
