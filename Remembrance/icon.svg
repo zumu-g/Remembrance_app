@@ -1,0 +1,50 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- App icon background with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a1f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f2310;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fef9e7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f4e8c8;stop-opacity:1" />
+    </linearGradient>
+    <!-- Subtle shadow filter -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Rounded rectangle background -->
+  <rect width="200" height="200" rx="45" ry="45" fill="url(#bgGradient)"/>
+  
+  <!-- Circular year indicator -->
+  <circle cx="100" cy="85" r="45" fill="none" stroke="url(#textGradient)" stroke-width="3" opacity="0.6"/>
+  
+  <!-- Year progress arc (representing days passing) -->
+  <path d="M 100 40 A 45 45 0 0 1 145 85" fill="none" stroke="url(#heartGradient)" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Heart symbol in center -->
+  <path d="M100,70 C94,64 84,64 84,76 C84,88 100,98 100,98 C100,98 116,88 116,76 C116,64 106,64 100,70 Z" 
+        fill="url(#heartGradient)" filter="url(#shadow)"/>
+  
+  <!-- "365" text -->
+  <text x="100" y="135" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+        fill="url(#textGradient)" text-anchor="middle">365</text>
+  
+  <!-- "DAYS" text -->
+  <text x="100" y="155" font-family="Arial, sans-serif" font-size="12" font-weight="normal" 
+        fill="url(#textGradient)" text-anchor="middle" opacity="0.8">DAYS</text>
+  
+  <!-- Small decorative dots -->
+  <circle cx="70" cy="170" r="2" fill="url(#textGradient)" opacity="0.5"/>
+  <circle cx="100" cy="175" r="2" fill="url(#heartGradient)" opacity="0.7"/>
+  <circle cx="130" cy="170" r="2" fill="url(#textGradient)" opacity="0.5"/>
+  
+  <!-- Subtle highlight on top -->
+  <rect width="200" height="60" rx="45" ry="45" fill="url(#textGradient)" opacity="0.1"/>
+</svg>
