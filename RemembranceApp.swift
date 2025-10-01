@@ -1938,14 +1938,15 @@ struct SimpleSettingsView: View {
                     }
                     .padding(.horizontal, 20)
 
-                    // Premium Subscription Button
-                    if storeManager.subscriptionStatus != .subscribed {
-                        VStack(spacing: 20) {
-                            Text("PREMIUM")
-                                .font(.system(size: 18, weight: .semibold, design: .serif))
-                                .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
-                                .kerning(0.5)
+                    // Premium Section
+                    VStack(spacing: 20) {
+                        Text("PREMIUM")
+                            .font(.system(size: 18, weight: .semibold, design: .serif))
+                            .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
+                            .kerning(0.5)
 
+                        if storeManager.subscriptionStatus != .subscribed {
+                            // Upgrade Button
                             Button(action: {
                                 showPremiumUpgrade = true
                             }) {
@@ -1988,9 +1989,56 @@ struct SimpleSettingsView: View {
                                         )
                                 )
                             }
+                        } else {
+                            // Subscription Management for Premium Users
+                            VStack(spacing: 12) {
+                                // Active Status
+                                HStack {
+                                    Image(systemName: "checkmark.seal.fill")
+                                        .font(.system(size: 20))
+                                        .foregroundColor(Color.green)
+
+                                    Text("Premium Active")
+                                        .font(.system(size: 16, weight: .medium, design: .serif))
+                                        .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
+
+                                    Spacer()
+                                }
+                                .padding(16)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.black.opacity(0.2))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color.green.opacity(0.3), lineWidth: 1)
+                                        )
+                                )
+
+                                // Manage Subscription Button
+                                Button(action: {
+                                    if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+                                        UIApplication.shared.open(url)
+                                    }
+                                }) {
+                                    HStack {
+                                        Text("Manage Subscription")
+                                            .font(.system(size: 15, design: .serif))
+                                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
+
+                                        Spacer()
+
+                                        Image(systemName: "arrow.up.right")
+                                            .font(.system(size: 12))
+                                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.5))
+                                    }
+                                    .padding(14)
+                                    .background(Color.black.opacity(0.1))
+                                    .cornerRadius(8)
+                                }
+                            }
                         }
-                        .padding(.horizontal, 20)
                     }
+                    .padding(.horizontal, 20)
 
                     // App Information Section
                     VStack(spacing: 20) {
@@ -2250,7 +2298,7 @@ struct SimpleSettingsView: View {
     }
 }
 
-// Premium Upgrade Screen
+// Premium Upgrade Screen - Clean & Sophisticated
 struct PremiumUpgradeView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var storeManager = StoreKitManager.shared
@@ -2265,146 +2313,80 @@ struct PremiumUpgradeView: View {
                 .ignoresSafeArea()
 
             ScrollView {
-                VStack(spacing: 30) {
-                    // Header
+                VStack(spacing: 40) {
+                    // Minimal Header
                     VStack(spacing: 20) {
                         HStack {
                             Button(action: { dismiss() }) {
                                 Image(systemName: "xmark")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.8))
-                                    .padding(12)
-                                    .background(Color.black.opacity(0.2))
-                                    .cornerRadius(10)
+                                    .font(.system(size: 16))
+                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.6))
                             }
                             Spacer()
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 10)
+                        .padding(.horizontal, 25)
+                        .padding(.top, 15)
 
-                        Image(systemName: "star.fill")
-                            .font(.system(size: 70))
-                            .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
-                            .padding(.top, 10)
+                        VStack(spacing: 12) {
+                            Text("Premium")
+                                .font(.system(size: 28, weight: .light, design: .serif))
+                                .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
 
-                        Text("REMEMBRANCE")
-                            .font(.system(size: 32, weight: .bold, design: .serif))
-                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
-                            .kerning(2.0)
-
-                        Text("PREMIUM")
-                            .font(.system(size: 24, weight: .semibold, design: .serif))
-                            .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
-                            .kerning(1.5)
-
-                        if storeManager.subscriptionStatus == .trial {
-                            Text("\(storeManager.trialDaysRemaining) days left in your free trial")
-                                .font(.system(size: 16, design: .serif))
-                                .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.8))
+                            if storeManager.subscriptionStatus == .trial {
+                                Text("\(storeManager.trialDaysRemaining) days remaining")
+                                    .font(.system(size: 14, design: .serif))
+                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.6))
+                            }
                         }
+                        .padding(.top, 20)
                     }
 
-                    // Benefits
-                    VStack(spacing: 20) {
-                        Text("PREMIUM BENEFITS")
-                            .font(.system(size: 18, weight: .semibold, design: .serif))
-                            .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
-                            .kerning(0.5)
-
-                        VStack(spacing: 15) {
-                            PremiumBenefitRow(
-                                icon: "photo.fill.on.rectangle.fill",
-                                title: "Unlimited Photos",
-                                description: "Store all your precious memories"
-                            )
-
-                            PremiumBenefitRow(
-                                icon: "quote.bubble.fill",
-                                title: "365 Daily Quotes",
-                                description: "Inspirational quotes every day"
-                            )
-
-                            PremiumBenefitRow(
-                                icon: "calendar.badge.clock",
-                                title: "Complete Timeline",
-                                description: "Access your full memory history"
-                            )
-
-                            PremiumBenefitRow(
-                                icon: "bell.badge.fill",
-                                title: "Daily Reminders",
-                                description: "Never miss a memory moment"
-                            )
-
-                            PremiumBenefitRow(
-                                icon: "heart.circle.fill",
-                                title: "Support Development",
-                                description: "Help us keep improving the app"
-                            )
-                        }
+                    // Simple Benefits List
+                    VStack(spacing: 18) {
+                        benefitItem(text: "Unlimited photo storage")
+                        benefitItem(text: "365 daily quotes")
+                        benefitItem(text: "Complete timeline access")
+                        benefitItem(text: "Daily reminders")
+                        benefitItem(text: "Support ongoing development")
                     }
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, 40)
 
-                    // Subscription Options
-                    VStack(spacing: 15) {
-                        Text("CHOOSE YOUR PLAN")
-                            .font(.system(size: 18, weight: .semibold, design: .serif))
-                            .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
-                            .kerning(0.5)
-
-                        // Annual Option (Featured)
+                    // Subscription Options - Clean & Minimal
+                    VStack(spacing: 12) {
+                        // Annual Option
                         let yearlyProduct = storeManager.products.first(where: { $0.id.contains("yearly") })
                         Button(action: {
                             if let product = yearlyProduct {
                                 Task { await purchaseProduct(product) }
                             }
                         }) {
-                            VStack(spacing: 0) {
-                                // Best Value Banner
-                                ZStack {
-                                    Color.green.opacity(0.9)
-                                    Text("BEST VALUE - SAVE 44%")
-                                        .font(.system(size: 13, weight: .bold, design: .serif))
-                                        .foregroundColor(.white)
-                                        .padding(.vertical, 8)
-                                }
-                                .frame(height: 36)
-                                .frame(maxWidth: .infinity)
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Annual")
+                                        .font(.system(size: 16, weight: .medium, design: .serif))
+                                        .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
 
-                                // Plan Details
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        Text("Annual Plan")
-                                            .font(.system(size: 20, weight: .bold, design: .serif))
-                                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
-
-                                        Text(yearlyProduct?.displayPrice ?? "$19.99/year")
-                                            .font(.system(size: 16, design: .serif))
-                                            .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
-
-                                        Text("Just $1.67 per month")
+                                    HStack(spacing: 6) {
+                                        Text(yearlyProduct?.displayPrice ?? "$19.99")
                                             .font(.system(size: 14, design: .serif))
                                             .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.7))
+
+                                        Text("· Best value")
+                                            .font(.system(size: 13, design: .serif))
+                                            .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
                                     }
-
-                                    Spacer()
-
-                                    Text("Subscribe Now")
-                                        .font(.system(size: 16, weight: .semibold, design: .serif))
-                                        .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
-                                        .padding(.horizontal, 24)
-                                        .padding(.vertical, 12)
-                                        .background(Color.green.opacity(0.9))
-                                        .cornerRadius(10)
                                 }
-                                .padding(20)
-                                .background(Color.black.opacity(0.3))
+
+                                Spacer()
+
+                                Image(systemName: "arrow.right")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.5))
                             }
-                            .cornerRadius(12)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.green, lineWidth: 3)
-                            )
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 18)
+                            .background(Color.white.opacity(0.05))
+                            .cornerRadius(8)
                         }
                         .disabled(isPurchasing)
 
@@ -2416,73 +2398,65 @@ struct PremiumUpgradeView: View {
                             }
                         }) {
                             HStack {
-                                VStack(alignment: .leading, spacing: 6) {
-                                    Text("Monthly Plan")
-                                        .font(.system(size: 18, weight: .semibold, design: .serif))
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Monthly")
+                                        .font(.system(size: 16, weight: .medium, design: .serif))
                                         .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
 
-                                    Text(monthlyProduct?.displayPrice ?? "$2.99/month")
-                                        .font(.system(size: 16, design: .serif))
-                                        .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
+                                    Text(monthlyProduct?.displayPrice ?? "$2.99")
+                                        .font(.system(size: 14, design: .serif))
+                                        .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.7))
                                 }
 
                                 Spacer()
 
-                                Text("Subscribe Now")
-                                    .font(.system(size: 16, weight: .semibold, design: .serif))
-                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
-                                    .padding(.horizontal, 24)
-                                    .padding(.vertical, 12)
-                                    .background(Color.blue.opacity(0.9))
-                                    .cornerRadius(10)
+                                Image(systemName: "arrow.right")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.5))
                             }
-                            .padding(20)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.black.opacity(0.2))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color(red: 0.7, green: 0.6, blue: 0.3).opacity(0.5), lineWidth: 2)
-                                    )
-                            )
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 18)
+                            .background(Color.white.opacity(0.05))
+                            .cornerRadius(8)
                         }
                         .disabled(isPurchasing)
 
                         if isPurchasing {
-                            HStack(spacing: 12) {
+                            HStack(spacing: 10) {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle(tint: Color(red: 0.7, green: 0.6, blue: 0.3)))
-                                Text("Processing your subscription...")
-                                    .font(.system(size: 14, design: .serif))
-                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.8))
+                                    .scaleEffect(0.8)
+                                Text("Processing...")
+                                    .font(.system(size: 13, design: .serif))
+                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.6))
                             }
-                            .padding(.vertical, 10)
+                            .padding(.vertical, 8)
                         }
                     }
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, 25)
 
-                    // Restore Purchases
-                    Button(action: {
-                        Task {
-                            await storeManager.restorePurchases()
-                            if storeManager.subscriptionStatus == .subscribed {
-                                dismiss()
+                    // Footer Links
+                    VStack(spacing: 16) {
+                        Button(action: {
+                            Task {
+                                await storeManager.restorePurchases()
+                                if storeManager.subscriptionStatus == .subscribed {
+                                    dismiss()
+                                }
                             }
+                        }) {
+                            Text("Restore purchases")
+                                .font(.system(size: 13, design: .serif))
+                                .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.5))
                         }
-                    }) {
-                        Text("Restore Purchases")
-                            .font(.system(size: 14, weight: .medium, design: .serif))
-                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.7))
-                            .underline()
-                    }
 
-                    // Terms
-                    Text("Subscriptions auto-renew unless cancelled 24 hours before the period ends.")
-                        .font(.system(size: 11, design: .serif))
-                        .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.5))
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 30)
-                        .padding(.bottom, 30)
+                        Text("Auto-renews unless cancelled 24 hours before period ends")
+                            .font(.system(size: 11, design: .serif))
+                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.4))
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(.horizontal, 40)
+                    .padding(.bottom, 30)
                 }
             }
         }
@@ -2508,48 +2482,20 @@ struct PremiumUpgradeView: View {
             showError = true
         }
     }
-}
 
-// Premium Benefit Row Component
-struct PremiumBenefitRow: View {
-    let icon: String
-    let title: String
-    let description: String
+    // Simple benefit list item
+    private func benefitItem(text: String) -> some View {
+        HStack(spacing: 12) {
+            Circle()
+                .fill(Color(red: 0.7, green: 0.6, blue: 0.3).opacity(0.6))
+                .frame(width: 4, height: 4)
 
-    var body: some View {
-        HStack(spacing: 15) {
-            Image(systemName: icon)
-                .font(.system(size: 28))
-                .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
-                .frame(width: 44, height: 44)
-                .background(Color.black.opacity(0.2))
-                .cornerRadius(10)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.system(size: 16, weight: .semibold, design: .serif))
-                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
-
-                Text(description)
-                    .font(.system(size: 13, design: .serif))
-                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.7))
-            }
+            Text(text)
+                .font(.system(size: 15, design: .serif))
+                .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.8))
 
             Spacer()
-
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 20))
-                .foregroundColor(Color.green.opacity(0.8))
         }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.black.opacity(0.2))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color(red: 0.7, green: 0.6, blue: 0.3).opacity(0.3), lineWidth: 1)
-                )
-        )
     }
 }
 
