@@ -163,10 +163,12 @@ struct SettingsTabView: View {
 
                 // Subscription Options
                 if storeManager.subscriptionStatus != .subscribed {
+                    let _ = print("🔔 Showing subscription options - Status: \(storeManager.subscriptionStatus), Products count: \(storeManager.products.count)")
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Choose Your Plan")
-                            .serifFont(.serifHeadline)
+                        Text("Upgrade to Premium")
+                            .font(.system(size: 20, weight: .bold, design: .serif))
                             .foregroundColor(.primary)
+                            .padding(.top, 8)
 
                         // Monthly Option
                         let monthlyProduct = storeManager.products.first(where: { $0.id.contains("monthly") })
