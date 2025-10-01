@@ -2580,10 +2580,11 @@ struct RemembranceApp: App {
                             // Force refresh the photo to ensure today's photo is shown
                             globalTodaysPhotoManager.forceRefreshPhoto(from: photoStore)
                         }
-                        .fullScreenCover(isPresented: $showOnboarding) {
-                            OnboardingView()
-                                .environmentObject(photoStore)
-                        }
+                        // Onboarding temporarily disabled
+                        // .fullScreenCover(isPresented: $showOnboarding) {
+                        //     OnboardingView()
+                        //         .environmentObject(photoStore)
+                        // }
                     
                     // Privacy overlay when app becomes inactive
                     if showPrivacyScreen {
