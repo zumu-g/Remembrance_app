@@ -1,5 +1,6 @@
 import SwiftUI
 import UserNotifications
+import StoreKit
 
 struct SettingsTabView: View {
     @Binding var selectedTab: Int
@@ -7,8 +8,14 @@ struct SettingsTabView: View {
     @State private var notificationsEnabled = false
     @State private var showingPhotoImport = false
     @State private var showingMainPhotoImport = false
+    @State private var showingPaywall = false
+    @State private var isPurchasing = false
+    @State private var showPurchaseError = false
+    @State private var purchaseErrorMessage = ""
+    @StateObject private var storeManager = StoreKitManager.shared
     
     var body: some View {
+        let _ = print("SettingsTabView loaded, storeManager status: \(storeManager.subscriptionStatus)")
         NavigationStack {
             ZStack {
                 // Add gradient background
@@ -26,6 +33,7 @@ struct SettingsTabView: View {
                 VStack(spacing: 0) {
                     Form {
                         appInfoSection
+                        subscriptionSection
                         photosSection
                         notificationSection
                         aboutSection
@@ -66,6 +74,14 @@ struct SettingsTabView: View {
         .sheet(isPresented: $showingMainPhotoImport) {
             MainPhotoImportView()
         }
+        .sheet(isPresented: $showingPaywall) {
+            PaywallView()
+        }
+        .alert("Purchase Error", isPresented: $showPurchaseError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(purchaseErrorMessage)
+        }
     }
     
     private var appInfoSection: some View {
@@ -88,7 +104,239 @@ struct SettingsTabView: View {
             .padding(.vertical, 8)
         }
     }
-    
+
+    private var subscriptionSection: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 15) {
+                // Subscription Status
+                HStack {
+                    if storeManager.subscriptionStatus == .trial {
+                        Image(systemName: "hourglass")
+                            .foregroundColor(.orange)
+                            .font(.system(size: 20))
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Free Trial")
+                                .serifFont(.serifHeadline)
+                            Text("\(storeManager.trialDaysRemaining) days remaining")
+                                .serifFont(.serifSubheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    } else if storeManager.subscriptionStatus == .subscribed {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                            .font(.system(size: 20))
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Premium Member")
+                                .serifFont(.serifHeadline)
+                            Text("Full access to all features")
+                                .serifFont(.serifSubheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    } else if storeManager.subscriptionStatus == .expired {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.red)
+                            .font(.system(size: 20))
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Trial Expired")
+                                .serifFont(.serifHeadline)
+                            Text("Subscribe to continue")
+                                .serifFont(.serifSubheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    } else {
+                        Image(systemName: "questionmark.circle")
+                            .foregroundColor(.gray)
+                            .font(.system(size: 20))
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Checking Status...")
+                                .serifFont(.serifHeadline)
+                            Text("Please wait")
+                                .serifFont(.serifSubheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    Spacer()
+                }
+                .padding(.vertical, 5)
+
+                Divider()
+
+                // Subscription Options
+                if storeManager.subscriptionStatus != .subscribed {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Choose Your Plan")
+                            .serifFont(.serifHeadline)
+                            .foregroundColor(.primary)
+
+                        // Monthly Option
+                        let monthlyProduct = storeManager.products.first(where: { $0.id.contains("monthly") })
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(monthlyProduct?.displayName ?? "Monthly Subscription")
+                                    .serifFont(.serifBody)
+                                Text(monthlyProduct?.displayPrice ?? "$2.99/month")
+                                    .serifFont(.serifSubheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            Button("Subscribe Now") {
+                                if let product = monthlyProduct {
+                                    Task {
+                                        await purchaseProduct(product)
+                                    }
+                                } else {
+                                    showingPaywall = true
+                                }
+                            }
+                            .disabled(isPurchasing)
+                            .serifFont(.serifBody)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(isPurchasing ? Color.blue.opacity(0.5) : Color.blue)
+                            .cornerRadius(8)
+                        }
+
+                        // Annual Option
+                        let yearlyProduct = storeManager.products.first(where: { $0.id.contains("yearly") })
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(spacing: 5) {
+                                    Text(yearlyProduct?.displayName ?? "Annual Subscription")
+                                        .serifFont(.serifBody)
+                                    Text("SAVE 44%")
+                                        .font(.system(size: 10, weight: .bold))
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(Color.green)
+                                        .cornerRadius(4)
+                                }
+                                Text(yearlyProduct?.displayPrice ?? "$19.99/year")
+                                    .serifFont(.serifSubheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            Button("Subscribe Now") {
+                                if let product = yearlyProduct {
+                                    Task {
+                                        await purchaseProduct(product)
+                                    }
+                                } else {
+                                    showingPaywall = true
+                                }
+                            }
+                            .disabled(isPurchasing)
+                            .serifFont(.serifBody)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(isPurchasing ? Color.green.opacity(0.5) : Color.green)
+                            .cornerRadius(8)
+                        }
+                    }
+                    .padding(.vertical, 5)
+
+                    if isPurchasing {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                            Text("Processing purchase...")
+                                .serifFont(.serifSubheadline)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                        }
+                        .padding(.vertical, 10)
+                    }
+
+                    Divider()
+                }
+
+                // Management Actions
+                VStack(alignment: .leading, spacing: 10) {
+                    if storeManager.subscriptionStatus == .subscribed {
+                        Button(action: {
+                            if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+                                UIApplication.shared.open(url)
+                            }
+                        }) {
+                            HStack {
+                                Image(systemName: "gear")
+                                Text("Manage Subscription")
+                                    .serifFont(.serifBody)
+                            }
+                        }
+                        .foregroundColor(.blue)
+
+                        Button(action: {
+                            if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+                                UIApplication.shared.open(url)
+                            }
+                        }) {
+                            HStack {
+                                Image(systemName: "xmark.circle")
+                                Text("Cancel Subscription")
+                                    .serifFont(.serifBody)
+                            }
+                        }
+                        .foregroundColor(.red)
+                    }
+
+                    Button(action: {
+                        Task {
+                            await storeManager.restorePurchases()
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "arrow.clockwise")
+                            Text("Restore Purchases")
+                                .serifFont(.serifBody)
+                        }
+                    }
+                    .foregroundColor(.secondary)
+                }
+
+                // Features List
+                if storeManager.subscriptionStatus != .subscribed {
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Premium Features")
+                            .serifFont(.serifHeadline)
+                            .foregroundColor(.primary)
+
+                        ForEach([
+                            "Unlimited photo storage",
+                            "365 daily inspirational quotes",
+                            "Complete memorial timeline",
+                            "Daily memory reminders",
+                            "Priority support"
+                        ], id: \.self) { feature in
+                            HStack(spacing: 8) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                                    .font(.system(size: 12))
+                                Text(feature)
+                                    .serifFont(.serifSubheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                    .padding(.vertical, 5)
+                }
+            }
+            .padding(.vertical, 4)
+        } header: {
+            Text("Subscription")
+                .serifFont(.serifHeadline)
+        } footer: {
+            Text("Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current period.")
+                .serifFont(.serifSubheadline)
+                .foregroundColor(.secondary)
+        }
+    }
+
     private var photosSection: some View {
         Section {
             Button("Set Main Portrait") {
@@ -233,19 +481,37 @@ struct SettingsTabView: View {
     
     private func sendTestNotification() {
         let center = UNUserNotificationCenter.current()
-        
+
         let content = UNMutableNotificationContent()
         content.title = "Test Notification"
         content.body = "This is a test of your daily memory reminder"
         content.sound = .default
-        
+
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
         let request = UNNotificationRequest(identifier: "test-notification", content: content, trigger: trigger)
-        
+
         center.add(request) { error in
             if let error = error {
                 print("Error sending test notification: \(error)")
             }
+        }
+    }
+
+    private func purchaseProduct(_ product: Product) async {
+        isPurchasing = true
+        defer { isPurchasing = false }
+
+        do {
+            let result = try await storeManager.purchase(product)
+            if result != nil {
+                print("✅ Purchase successful for \(product.displayName)")
+            } else {
+                print("⚠️ Purchase was cancelled or pending")
+            }
+        } catch {
+            purchaseErrorMessage = "Purchase failed: \(error.localizedDescription)"
+            showPurchaseError = true
+            print("❌ Purchase error: \(error)")
         }
     }
 }
