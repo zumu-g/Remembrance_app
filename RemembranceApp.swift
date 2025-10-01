@@ -11,6 +11,7 @@ import PhotosUI
 import CoreData
 import Foundation
 import UIKit
+import StoreKit
 
 // Photo storage that persists across tab switches with random selection
 class PhotoStore: ObservableObject {
