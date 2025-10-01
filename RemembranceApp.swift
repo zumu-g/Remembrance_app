@@ -1809,7 +1809,11 @@ struct SimpleSettingsView: View {
     @State private var tempTime: Date = Date()
     @State private var notificationsEnabled = false
     @State private var selectedTime = Date()
-    
+    @State private var isPurchasing = false
+    @State private var showPurchaseError = false
+    @State private var purchaseErrorMessage = ""
+    @StateObject private var storeManager = StoreKitManager.shared
+
     var body: some View {
         ZStack {
             // Solid background
@@ -1931,7 +1935,154 @@ struct SimpleSettingsView: View {
                         }
                     }
                     .padding(.horizontal, 20)
-                    
+
+                    // Premium Subscription Section
+                    if storeManager.subscriptionStatus != .subscribed {
+                        VStack(spacing: 20) {
+                            Text("UPGRADE TO PREMIUM")
+                                .font(.system(size: 18, weight: .semibold, design: .serif))
+                                .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
+                                .kerning(0.5)
+
+                            // Trial Status
+                            if storeManager.subscriptionStatus == .trial {
+                                HStack {
+                                    Image(systemName: "hourglass")
+                                        .font(.system(size: 20))
+                                        .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
+
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Free Trial Active")
+                                            .font(.system(size: 16, weight: .medium, design: .serif))
+                                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
+                                        Text("\(storeManager.trialDaysRemaining) days remaining")
+                                            .font(.system(size: 12, design: .serif))
+                                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.7))
+                                    }
+
+                                    Spacer()
+                                }
+                                .padding(16)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.black.opacity(0.2))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .stroke(Color(red: 0.7, green: 0.6, blue: 0.3).opacity(0.3), lineWidth: 1)
+                                        )
+                                )
+                            }
+
+                            VStack(spacing: 15) {
+                                // Monthly Subscription
+                                let monthlyProduct = storeManager.products.first(where: { $0.id.contains("monthly") })
+                                Button(action: {
+                                    if let product = monthlyProduct {
+                                        Task {
+                                            await purchaseProduct(product)
+                                        }
+                                    }
+                                }) {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(monthlyProduct?.displayName ?? "Monthly Subscription")
+                                                .font(.system(size: 16, weight: .medium, design: .serif))
+                                                .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
+
+                                            Text(monthlyProduct?.displayPrice ?? "$2.99/month")
+                                                .font(.system(size: 14, design: .serif))
+                                                .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
+                                        }
+
+                                        Spacer()
+
+                                        Text("Subscribe Now")
+                                            .font(.system(size: 14, weight: .semibold, design: .serif))
+                                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
+                                            .padding(.horizontal, 20)
+                                            .padding(.vertical, 10)
+                                            .background(Color.blue.opacity(0.8))
+                                            .cornerRadius(8)
+                                    }
+                                    .padding(16)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color.black.opacity(0.2))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .stroke(Color(red: 0.7, green: 0.6, blue: 0.3).opacity(0.3), lineWidth: 1)
+                                            )
+                                    )
+                                }
+                                .disabled(isPurchasing)
+
+                                // Annual Subscription
+                                let yearlyProduct = storeManager.products.first(where: { $0.id.contains("yearly") })
+                                Button(action: {
+                                    if let product = yearlyProduct {
+                                        Task {
+                                            await purchaseProduct(product)
+                                        }
+                                    }
+                                }) {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            HStack {
+                                                Text(yearlyProduct?.displayName ?? "Annual Subscription")
+                                                    .font(.system(size: 16, weight: .medium, design: .serif))
+                                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
+
+                                                Text("SAVE 44%")
+                                                    .font(.system(size: 11, weight: .bold))
+                                                    .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
+                                                    .padding(.horizontal, 8)
+                                                    .padding(.vertical, 3)
+                                                    .background(Color.green.opacity(0.8))
+                                                    .cornerRadius(4)
+                                            }
+
+                                            Text(yearlyProduct?.displayPrice ?? "$19.99/year")
+                                                .font(.system(size: 14, design: .serif))
+                                                .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
+                                        }
+
+                                        Spacer()
+
+                                        Text("Subscribe Now")
+                                            .font(.system(size: 14, weight: .semibold, design: .serif))
+                                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
+                                            .padding(.horizontal, 20)
+                                            .padding(.vertical, 10)
+                                            .background(Color.green.opacity(0.8))
+                                            .cornerRadius(8)
+                                    }
+                                    .padding(16)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color.black.opacity(0.2))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .stroke(Color(red: 0.7, green: 0.6, blue: 0.3).opacity(0.3), lineWidth: 1)
+                                            )
+                                    )
+                                }
+                                .disabled(isPurchasing)
+
+                                if isPurchasing {
+                                    HStack {
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle(tint: Color(red: 0.7, green: 0.6, blue: 0.3)))
+                                        Text("Processing...")
+                                            .font(.system(size: 14, design: .serif))
+                                            .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.7))
+                                    }
+                                    .padding(.vertical, 10)
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 20)
+                    }
+
                     // App Information Section
                     VStack(spacing: 20) {
                         Text("APP INFORMATION")
@@ -2008,6 +2159,11 @@ struct SimpleSettingsView: View {
                 saveNotificationSettings()
                 scheduleNotification()
             })
+        }
+        .alert("Purchase Error", isPresented: $showPurchaseError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(purchaseErrorMessage)
         }
     }
     
@@ -2160,6 +2316,24 @@ struct SimpleSettingsView: View {
             // Default to 9:00 AM
             let calendar = Calendar.current
             selectedTime = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: Date()) ?? Date()
+        }
+    }
+
+    private func purchaseProduct(_ product: Product) async {
+        isPurchasing = true
+        defer { isPurchasing = false }
+
+        do {
+            let result = try await storeManager.purchase(product)
+            if result != nil {
+                print("✅ Purchase successful for \(product.displayName)")
+            } else {
+                print("⚠️ Purchase was cancelled or pending")
+            }
+        } catch {
+            purchaseErrorMessage = "Purchase failed: \(error.localizedDescription)"
+            showPurchaseError = true
+            print("❌ Purchase error: \(error)")
         }
     }
 }
