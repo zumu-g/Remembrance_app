@@ -30,37 +30,16 @@ struct SettingsTabView: View {
                 )
                 .ignoresSafeArea()
                 
-                VStack(spacing: 0) {
-                    Form {
-                        appInfoSection
-                        subscriptionSection
-                        photosSection
-                        notificationSection
-                        aboutSection
-                    }
-                    .navigationTitle("Settings")
-                    .scrollContentBackground(.hidden)
-                    .background(Color.clear)
-                
-                // Simple back button
-                HStack {
-                    Button(action: {
-                        print("Back button tapped - setting selectedTab to 0")
-                        selectedTab = 0
-                    }) {
-                        Image(systemName: "arrow.left")
-                            .font(.system(size: 20, weight: .medium))
-                            .foregroundColor(.secondary)
-                            .padding()
-                            .background(Color.clear)
-                            .contentShape(Rectangle())
-                    }
-                    
-                    Spacer()
+                Form {
+                    appInfoSection
+                    subscriptionSection
+                    photosSection
+                    notificationSection
+                    aboutSection
                 }
-                .padding(.horizontal)
-                .padding(.bottom)
-                }
+                .navigationTitle("Settings")
+                .scrollContentBackground(.hidden)
+                .background(Color.clear)
             }
         }
         .onAppear {
@@ -161,10 +140,11 @@ struct SettingsTabView: View {
 
                 Divider()
 
-                // Subscription Options
+                // Subscription Options - Always show unless already subscribed
+                let _ = print("🔔 Subscription Status: \(storeManager.subscriptionStatus), Products: \(storeManager.products.count)")
+
                 if storeManager.subscriptionStatus != .subscribed {
-                    let _ = print("🔔 Showing subscription options - Status: \(storeManager.subscriptionStatus), Products count: \(storeManager.products.count)")
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 15) {
                         Text("Upgrade to Premium")
                             .font(.system(size: 20, weight: .bold, design: .serif))
                             .foregroundColor(.primary)
@@ -173,15 +153,16 @@ struct SettingsTabView: View {
                         // Monthly Option
                         let monthlyProduct = storeManager.products.first(where: { $0.id.contains("monthly") })
                         HStack {
-                            VStack(alignment: .leading, spacing: 2) {
+                            VStack(alignment: .leading, spacing: 4) {
                                 Text(monthlyProduct?.displayName ?? "Monthly Subscription")
-                                    .serifFont(.serifBody)
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundColor(.primary)
                                 Text(monthlyProduct?.displayPrice ?? "$2.99/month")
-                                    .serifFont(.serifSubheadline)
+                                    .font(.system(size: 14))
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            Button("Subscribe Now") {
+                            Button(action: {
                                 if let product = monthlyProduct {
                                     Task {
                                         await purchaseProduct(product)
@@ -189,37 +170,41 @@ struct SettingsTabView: View {
                                 } else {
                                     showingPaywall = true
                                 }
+                            }) {
+                                Text("Subscribe Now")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 10)
+                                    .background(isPurchasing ? Color.blue.opacity(0.5) : Color.blue)
+                                    .cornerRadius(8)
                             }
                             .disabled(isPurchasing)
-                            .serifFont(.serifBody)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(isPurchasing ? Color.blue.opacity(0.5) : Color.blue)
-                            .cornerRadius(8)
                         }
+                        .padding(.vertical, 4)
 
                         // Annual Option
                         let yearlyProduct = storeManager.products.first(where: { $0.id.contains("yearly") })
                         HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                HStack(spacing: 5) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack(spacing: 8) {
                                     Text(yearlyProduct?.displayName ?? "Annual Subscription")
-                                        .serifFont(.serifBody)
+                                        .font(.system(size: 16, weight: .semibold))
+                                        .foregroundColor(.primary)
                                     Text("SAVE 44%")
-                                        .font(.system(size: 10, weight: .bold))
+                                        .font(.system(size: 11, weight: .bold))
                                         .foregroundColor(.white)
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 2)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 3)
                                         .background(Color.green)
                                         .cornerRadius(4)
                                 }
                                 Text(yearlyProduct?.displayPrice ?? "$19.99/year")
-                                    .serifFont(.serifSubheadline)
+                                    .font(.system(size: 14))
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            Button("Subscribe Now") {
+                            Button(action: {
                                 if let product = yearlyProduct {
                                     Task {
                                         await purchaseProduct(product)
@@ -227,30 +212,33 @@ struct SettingsTabView: View {
                                 } else {
                                     showingPaywall = true
                                 }
+                            }) {
+                                Text("Subscribe Now")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 10)
+                                    .background(isPurchasing ? Color.green.opacity(0.5) : Color.green)
+                                    .cornerRadius(8)
                             }
                             .disabled(isPurchasing)
-                            .serifFont(.serifBody)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(isPurchasing ? Color.green.opacity(0.5) : Color.green)
-                            .cornerRadius(8)
                         }
-                    }
-                    .padding(.vertical, 5)
+                        .padding(.vertical, 4)
 
-                    if isPurchasing {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle())
-                            Text("Processing purchase...")
-                                .serifFont(.serifSubheadline)
-                                .foregroundColor(.secondary)
-                            Spacer()
+                        if isPurchasing {
+                            HStack {
+                                Spacer()
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle())
+                                Text("Processing purchase...")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                            }
+                            .padding(.vertical, 10)
                         }
-                        .padding(.vertical, 10)
                     }
+                    .padding(.vertical, 8)
 
                     Divider()
                 }
