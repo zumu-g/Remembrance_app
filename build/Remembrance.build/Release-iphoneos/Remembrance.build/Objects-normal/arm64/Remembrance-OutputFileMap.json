@@ -1,0 +1,25 @@
+{
+  "" : {
+    "const-values" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/Remembrance-master.swiftconstvalues",
+    "dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/Remembrance-master.d",
+    "diagnostics" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/Remembrance-master.dia",
+    "emit-module-dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/Remembrance-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/Remembrance-master-emit-module.dia",
+    "swift-dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/Remembrance-master.swiftdeps"
+  },
+  "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  },
+  "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/ContentView.swift" : {
+    "index-unit-output-path" : "/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/ContentView.o"
+  },
+  "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/RemembranceApp.swift" : {
+    "index-unit-output-path" : "/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/RemembranceApp.o",
+    "llvm-bc" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/RemembranceApp.bc",
+    "object" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/Objects-normal/arm64/RemembranceApp.o"
+  }
+}

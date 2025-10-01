@@ -1,0 +1,24 @@
+{
+  "source": "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Today"
+      },
+      {
+        "comment": "",
+        "key": "Timeline"
+      },
+      {
+        "comment": "",
+        "key": "Gallery"
+      },
+      {
+        "comment": "",
+        "key": "Settings"
+      }
+    ]
+  },
+  "version": 1
+}
