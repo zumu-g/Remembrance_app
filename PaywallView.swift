@@ -132,36 +132,30 @@ struct PaywallView: View {
     var subscriptionOptionsSection: some View {
         VStack(spacing: 15) {
             ForEach(storeManager.products, id: \.id) { product in
-                Button(action: {
-                    selectedProduct = product
-                    Task {
-                        await purchaseProduct(product)
-                    }
-                }) {
-                    VStack(spacing: 8) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(product.displayName)
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                VStack(spacing: 12) {
+                    // Product info card
+                    HStack {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(product.displayName)
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(.white)
 
-                                Text(product.description)
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.white.opacity(0.8))
-                            }
+                            Text(product.description)
+                                .font(.system(size: 14))
+                                .foregroundColor(.white.opacity(0.8))
+                        }
 
-                            Spacer()
+                        Spacer()
 
-                            VStack(alignment: .trailing, spacing: 3) {
-                                Text(product.displayPrice)
-                                    .font(.system(size: 20, weight: .bold))
-                                    .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+                        VStack(alignment: .trailing, spacing: 3) {
+                            Text(product.displayPrice)
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
 
-                                if product.id.contains("yearly") {
-                                    Text("Save 44%")
-                                        .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.green)
-                                }
+                            if product.id.contains("yearly") {
+                                Text("Save 44%")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundColor(.green)
                             }
                         }
                     }
@@ -174,14 +168,32 @@ struct PaywallView: View {
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(selectedProduct?.id == product.id ? Color(red: 179/255, green: 154/255, blue: 76/255) : Color.clear, lineWidth: 2)
                     )
-                }
-                .disabled(isPurchasing)
-            }
 
-            if isPurchasing {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                    .padding()
+                    // Clear Subscribe button
+                    Button(action: {
+                        selectedProduct = product
+                        Task {
+                            await purchaseProduct(product)
+                        }
+                    }) {
+                        HStack {
+                            Spacer()
+                            if isPurchasing && selectedProduct?.id == product.id {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            } else {
+                                Text("Subscribe Now")
+                                    .font(.system(size: 16, weight: .semibold))
+                                    .foregroundColor(.white)
+                            }
+                            Spacer()
+                        }
+                        .padding()
+                        .background(Color(red: 179/255, green: 154/255, blue: 76/255))
+                        .cornerRadius(10)
+                    }
+                    .disabled(isPurchasing)
+                }
             }
         }
     }
