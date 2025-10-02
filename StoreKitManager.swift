@@ -44,13 +44,19 @@ class StoreKitManager: ObservableObject {
 
     func loadProducts() async {
         do {
+            print("🔄 Attempting to load products for IDs: \(ProductIdentifiers.all)")
             products = try await Product.products(for: ProductIdentifiers.all)
             print("✅ Products loaded: \(products.count) products")
+            if products.isEmpty {
+                print("⚠️ WARNING: Products array is empty! StoreKit configuration may not be enabled.")
+                print("   To fix in Xcode: Edit Scheme → Run → Options → StoreKit Configuration → Select 'Configuration.storekit'")
+            }
             for product in products {
                 print("  - \(product.id): \(product.displayName) - \(product.displayPrice)")
             }
         } catch {
             print("❌ Failed to load products: \(error)")
+            print("   Error details: \(error.localizedDescription)")
         }
     }
 
