@@ -32,7 +32,7 @@ struct ContentView: View {
                 }
                 .tag(2)
             
-            SimpleSettingsView()
+            SettingsTabView(selectedTab: $selectedTab)
                 .tabItem {
                     Image(systemName: "gear")
                     Text("Settings")
