@@ -22,7 +22,6 @@ struct PaywallView: View {
                         trialStatusSection
                         featuresSection
                         subscriptionOptionsSection
-                        restorePurchaseButton
                         termsSection
                     }
                     .padding(.horizontal)
@@ -263,20 +262,6 @@ struct PaywallView: View {
         }
     }
 
-    var restorePurchaseButton: some View {
-        Button(action: {
-            Task {
-                await restorePurchases()
-            }
-        }) {
-            Text("Restore Purchases")
-                .font(.system(size: 16))
-                .foregroundColor(.white.opacity(0.8))
-                .underline()
-        }
-        .disabled(isPurchasing)
-    }
-
     var termsSection: some View {
         VStack(spacing: 10) {
             Text("Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current period.")
@@ -308,20 +293,6 @@ struct PaywallView: View {
             dismiss()
         } catch {
             errorMessage = "Purchase failed: \(error.localizedDescription)"
-            showError = true
-        }
-    }
-
-    private func restorePurchases() async {
-        isPurchasing = true
-        defer { isPurchasing = false }
-
-        await storeManager.restorePurchases()
-
-        if storeManager.subscriptionStatus == .subscribed {
-            dismiss()
-        } else {
-            errorMessage = "No active subscriptions found"
             showError = true
         }
     }
