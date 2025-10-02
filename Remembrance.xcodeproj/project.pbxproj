@@ -15,6 +15,10 @@
 		B8923C582E8E03A500B37FF0 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8923C542E8E03A400B37FF0 /* StoreKitManager.swift */; };
 		B8923C592E8E03A500B37FF0 /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = B8923C552E8E03A500B37FF0 /* Configuration.storekit */; };
 		B8923C5A2E8E03A500B37FF0 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8923C562E8E03A500B37FF0 /* PaywallView.swift */; };
+		B8923C5C2E8E135100B37FF0 /* SettingsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8923C5B2E8E135100B37FF0 /* SettingsTabView.swift */; };
+		B8923C5D2E8E200000B37FF0 /* SerifFontModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8923C5E2E8E200000B37FF0 /* SerifFontModifier.swift */; };
+		B8923C632E8E300000B37FF0 /* PaperCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8923C642E8E300000B37FF0 /* PaperCardView.swift */; };
+		B8923C652E8E300100B37FF0 /* NavigationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8923C662E8E300100B37FF0 /* NavigationHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +31,15 @@
 		B8923C542E8E03A400B37FF0 /* StoreKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreKitManager.swift; sourceTree = "<group>"; };
 		B8923C552E8E03A500B37FF0 /* Configuration.storekit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
 		B8923C562E8E03A500B37FF0 /* PaywallView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		B8923C5B2E8E135100B37FF0 /* SettingsTabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SettingsTabView.swift"; sourceTree = "<group>"; };
+		B8923C5E2E8E200000B37FF0 /* SerifFontModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SerifFontModifier.swift"; sourceTree = "<group>"; };
+		B8923C602E8E200100B37FF0 /* MainPhotoImportView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/MainPhotoImportView.swift"; sourceTree = "<group>"; };
+		B8923C622E8E200200B37FF0 /* MultiMethodImportView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/MultiMethodImportView.swift"; sourceTree = "<group>"; };
+		B8923C642E8E300000B37FF0 /* PaperCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PaperCardView.swift"; sourceTree = "<group>"; };
+		B8923C662E8E300100B37FF0 /* NavigationHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NavigationHelper.swift"; sourceTree = "<group>"; };
+		B8923C682E8E300200B37FF0 /* PhotoImportView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/PhotoImportView.swift"; sourceTree = "<group>"; };
+		B8923C6A2E8E300300B37FF0 /* FilesImportView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/FilesImportView.swift"; sourceTree = "<group>"; };
+		B8923C6C2E8E300400B37FF0 /* DragDropPhotoImportView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Views/DragDropPhotoImportView.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +56,15 @@
 		B871C16C2E433E44005CB199 = {
 			isa = PBXGroup;
 			children = (
+				B8923C5B2E8E135100B37FF0 /* SettingsTabView.swift */,
+				B8923C5E2E8E200000B37FF0 /* SerifFontModifier.swift */,
+				B8923C642E8E300000B37FF0 /* PaperCardView.swift */,
+				B8923C662E8E300100B37FF0 /* NavigationHelper.swift */,
+				B8923C602E8E200100B37FF0 /* MainPhotoImportView.swift */,
+				B8923C622E8E200200B37FF0 /* MultiMethodImportView.swift */,
+				B8923C682E8E300200B37FF0 /* PhotoImportView.swift */,
+				B8923C6A2E8E300300B37FF0 /* FilesImportView.swift */,
+				B8923C6C2E8E300400B37FF0 /* DragDropPhotoImportView.swift */,
 				B8923C552E8E03A500B37FF0 /* Configuration.storekit */,
 				B8923C532E8E03A400B37FF0 /* OnboardingView.swift */,
 				B8923C562E8E03A500B37FF0 /* PaywallView.swift */,
@@ -154,6 +176,10 @@
 				B8923C572E8E03A500B37FF0 /* OnboardingView.swift in Sources */,
 				B8923C5A2E8E03A500B37FF0 /* PaywallView.swift in Sources */,
 				B871C17B2E433E44005CB199 /* ContentView.swift in Sources */,
+				B8923C5C2E8E135100B37FF0 /* SettingsTabView.swift in Sources */,
+				B8923C5D2E8E200000B37FF0 /* SerifFontModifier.swift in Sources */,
+				B8923C632E8E300000B37FF0 /* PaperCardView.swift in Sources */,
+				B8923C652E8E300100B37FF0 /* NavigationHelper.swift in Sources */,
 				B871C1792E433E44005CB199 /* RemembranceApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

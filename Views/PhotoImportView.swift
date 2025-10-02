@@ -278,5 +278,5 @@ struct PhotoImportView: View {
 
 #Preview {
     PhotoImportView()
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(PhotoStore())
 }
