@@ -386,11 +386,15 @@ struct OnboardingView: View {
         }
 
         // Add photos to photoStore
+        var allPhotos: [UIImage] = []
         if let mainPhoto = mainPhoto {
-            photoStore.setMainPhoto(mainPhoto)
+            allPhotos.append(mainPhoto)
         }
         if !galleryPhotos.isEmpty {
-            photoStore.addImages(galleryPhotos)
+            allPhotos.append(contentsOf: galleryPhotos)
+        }
+        if !allPhotos.isEmpty {
+            photoStore.addImages(allPhotos)
         }
 
         // Mark onboarding as complete

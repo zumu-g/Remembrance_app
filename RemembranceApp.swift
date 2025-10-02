@@ -1234,6 +1234,7 @@ struct TodayView: View {
     @ObservedObject private var photoManager = globalTodaysPhotoManager
     @Binding var tabBarVisible: Bool
     @State private var showingFullScreen = false
+    @AppStorage("showQuotes") private var showQuotes: Bool = true
     
     var body: some View {
         let _ = print("📱 TodayView.body: Rendering with photo state = \(photoManager.todaysPhoto != nil ? "HAS PHOTO" : "NO PHOTO"), PhotoStore count = \(photoStore.images.count)")
@@ -1306,10 +1307,10 @@ struct TodayView: View {
             }
             
             // Bottom overlay with quote
-            if photoManager.todaysPhoto != nil {
+            if photoManager.todaysPhoto != nil && showQuotes {
                 VStack {
                     Spacer()
-                    
+
                     HStack {
                         VStack(spacing: 8) {
                             Text(photoStore.getTodaysQuote())
@@ -1391,6 +1392,7 @@ struct TodayFullScreenView: View {
     @ObservedObject var photoStore: PhotoStore
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var photoManager = globalTodaysPhotoManager
+    @AppStorage("showQuotes") private var showQuotes: Bool = true
     
     var body: some View {
         ZStack {
@@ -1443,10 +1445,10 @@ struct TodayFullScreenView: View {
             }
             
             // Bottom overlay with quote
-            if photoManager.todaysPhoto != nil {
+            if photoManager.todaysPhoto != nil && showQuotes {
                 VStack {
                     Spacer()
-                    
+
                     HStack {
                         VStack(spacing: 8) {
                             Text(photoStore.getTodaysQuote())
@@ -1708,6 +1710,7 @@ struct MemoryDetailView: View {
     let memoryDay: MemoryDay
     @ObservedObject var photoStore: PhotoStore
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("showQuotes") private var showQuotes: Bool = true
     
     var body: some View {
         ZStack {
@@ -1760,10 +1763,10 @@ struct MemoryDetailView: View {
             }
             
             // Bottom overlay with quote
-            if HistoricalPhotoManager.shared.getPhotoForDate(memoryDay.date, from: photoStore) != nil {
+            if HistoricalPhotoManager.shared.getPhotoForDate(memoryDay.date, from: photoStore) != nil && showQuotes {
                 VStack {
                     Spacer()
-                    
+
                     HStack {
                         VStack(spacing: 8) {
                             Text(HistoricalQuoteManager.shared.getQuoteForDate(memoryDay.date, from: photoStore.quotes))

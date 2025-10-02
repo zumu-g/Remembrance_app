@@ -13,6 +13,7 @@ struct SettingsTabView: View {
     @State private var showPurchaseError = false
     @State private var purchaseErrorMessage = ""
     @StateObject private var storeManager = StoreKitManager.shared
+    @AppStorage("showQuotes") private var showQuotes: Bool = true
     
     var body: some View {
         let _ = print("SettingsTabView loaded, storeManager status: \(storeManager.subscriptionStatus)")
@@ -357,6 +358,9 @@ struct SettingsTabView: View {
     
     private var notificationSection: some View {
         Section {
+            Toggle("Show Daily Quotes", isOn: $showQuotes)
+                .serifFont(.serifBody)
+
             Toggle("Enable Notifications", isOn: $notificationsEnabled)
                 .serifFont(.serifBody)
                 .onChange(of: notificationsEnabled) { _, enabled in
@@ -366,7 +370,7 @@ struct SettingsTabView: View {
                         disableNotifications()
                     }
                 }
-            
+
             if notificationsEnabled {
                 DatePicker("Notification Time", selection: $notificationTime, displayedComponents: .hourAndMinute)
                     .serifFont(.serifBody)
@@ -374,7 +378,7 @@ struct SettingsTabView: View {
                         saveNotificationTime(newTime)
                         scheduleNotification(for: newTime)
                     }
-                
+
                 Button("Test Notification") {
                     sendTestNotification()
                 }
@@ -382,7 +386,7 @@ struct SettingsTabView: View {
                 .foregroundColor(.blue)
             }
         } header: {
-            Text("Daily Reminders")
+            Text("Display & Reminders")
                 .serifFont(.serifHeadline)
         }
     }

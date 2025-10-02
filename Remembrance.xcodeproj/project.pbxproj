@@ -11,27 +11,11 @@
 		B871C17B2E433E44005CB199 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871C17A2E433E44005CB199 /* ContentView.swift */; };
 		B871C17D2E433E47005CB199 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B871C17C2E433E47005CB199 /* Assets.xcassets */; };
 		B871C1802E433E47005CB199 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B871C17F2E433E47005CB199 /* Preview Assets.xcassets */; };
-		B871C18A2E433E48005CB199 /* RemembranceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871C1892E433E48005CB199 /* RemembranceTests.swift */; };
-		B871C1942E433E48005CB199 /* RemembranceUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871C1932E433E48005CB199 /* RemembranceUITests.swift */; };
-		B871C1962E433E48005CB199 /* RemembranceUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B871C1952E433E48005CB199 /* RemembranceUITestsLaunchTests.swift */; };
+		B8923C572E8E03A500B37FF0 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8923C532E8E03A400B37FF0 /* OnboardingView.swift */; };
+		B8923C582E8E03A500B37FF0 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8923C542E8E03A400B37FF0 /* StoreKitManager.swift */; };
+		B8923C592E8E03A500B37FF0 /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = B8923C552E8E03A500B37FF0 /* Configuration.storekit */; };
+		B8923C5A2E8E03A500B37FF0 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8923C562E8E03A500B37FF0 /* PaywallView.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		B871C1862E433E48005CB199 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B871C16D2E433E44005CB199 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B871C1742E433E44005CB199;
-			remoteInfo = Remembrance;
-		};
-		B871C1902E433E48005CB199 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B871C16D2E433E44005CB199 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B871C1742E433E44005CB199;
-			remoteInfo = Remembrance;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		B871C1752E433E44005CB199 /* Remembrance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Remembrance.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -39,29 +23,14 @@
 		B871C17A2E433E44005CB199 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B871C17C2E433E47005CB199 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B871C17F2E433E47005CB199 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		B871C1852E433E48005CB199 /* RemembranceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RemembranceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B871C1892E433E48005CB199 /* RemembranceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemembranceTests.swift; sourceTree = "<group>"; };
-		B871C18F2E433E48005CB199 /* RemembranceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RemembranceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B871C1932E433E48005CB199 /* RemembranceUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemembranceUITests.swift; sourceTree = "<group>"; };
-		B871C1952E433E48005CB199 /* RemembranceUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemembranceUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B8923C532E8E03A400B37FF0 /* OnboardingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		B8923C542E8E03A400B37FF0 /* StoreKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreKitManager.swift; sourceTree = "<group>"; };
+		B8923C552E8E03A500B37FF0 /* Configuration.storekit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
+		B8923C562E8E03A500B37FF0 /* PaywallView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		B871C1722E433E44005CB199 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B871C1822E433E48005CB199 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B871C18C2E433E48005CB199 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -74,7 +43,11 @@
 		B871C16C2E433E44005CB199 = {
 			isa = PBXGroup;
 			children = (
-				B871C1772E433E44005CB199 /* Remembrance */,
+				B8923C552E8E03A500B37FF0 /* Configuration.storekit */,
+				B8923C532E8E03A400B37FF0 /* OnboardingView.swift */,
+				B8923C562E8E03A500B37FF0 /* PaywallView.swift */,
+				B8923C542E8E03A400B37FF0 /* StoreKitManager.swift */,
+				B871C1772E433E44005CB199 /* ../Remembrance */,
 				B871C1762E433E44005CB199 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -87,7 +60,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B871C1772E433E44005CB199 /* Remembrance */ = {
+		B871C1772E433E44005CB199 /* ../Remembrance */ = {
 			isa = PBXGroup;
 			children = (
 				B871C1782E433E44005CB199 /* RemembranceApp.swift */,
@@ -104,23 +77,6 @@
 				B871C17F2E433E47005CB199 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		B871C1882E433E48005CB199 /* RemembranceTests */ = {
-			isa = PBXGroup;
-			children = (
-				B871C1892E433E48005CB199 /* RemembranceTests.swift */,
-			);
-			path = RemembranceTests;
-			sourceTree = "<group>";
-		};
-		B871C1922E433E48005CB199 /* RemembranceUITests */ = {
-			isa = PBXGroup;
-			children = (
-				B871C1932E433E48005CB199 /* RemembranceUITests.swift */,
-				B871C1952E433E48005CB199 /* RemembranceUITestsLaunchTests.swift */,
-			);
-			path = RemembranceUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,42 +99,6 @@
 			productReference = B871C1752E433E44005CB199 /* Remembrance.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B871C1842E433E48005CB199 /* RemembranceTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B871C19C2E433E48005CB199 /* Build configuration list for PBXNativeTarget "RemembranceTests" */;
-			buildPhases = (
-				B871C1812E433E48005CB199 /* Sources */,
-				B871C1822E433E48005CB199 /* Frameworks */,
-				B871C1832E433E48005CB199 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B871C1872E433E48005CB199 /* PBXTargetDependency */,
-			);
-			name = RemembranceTests;
-			productName = RemembranceTests;
-			productReference = B871C1852E433E48005CB199 /* RemembranceTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		B871C18E2E433E48005CB199 /* RemembranceUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B871C19F2E433E48005CB199 /* Build configuration list for PBXNativeTarget "RemembranceUITests" */;
-			buildPhases = (
-				B871C18B2E433E48005CB199 /* Sources */,
-				B871C18C2E433E48005CB199 /* Frameworks */,
-				B871C18D2E433E48005CB199 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				B871C1912E433E48005CB199 /* PBXTargetDependency */,
-			);
-			name = RemembranceUITests;
-			productName = RemembranceUITests;
-			productReference = B871C18F2E433E48005CB199 /* RemembranceUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -191,14 +111,6 @@
 				TargetAttributes = {
 					B871C1742E433E44005CB199 = {
 						CreatedOnToolsVersion = 15.2;
-					};
-					B871C1842E433E48005CB199 = {
-						CreatedOnToolsVersion = 15.2;
-						TestTargetID = B871C1742E433E44005CB199;
-					};
-					B871C18E2E433E48005CB199 = {
-						CreatedOnToolsVersion = 15.2;
-						TestTargetID = B871C1742E433E44005CB199;
 					};
 				};
 			};
@@ -226,21 +138,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B871C1802E433E47005CB199 /* Preview Assets.xcassets in Resources */,
+				B8923C592E8E03A500B37FF0 /* Configuration.storekit in Resources */,
 				B871C17D2E433E47005CB199 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B871C1832E433E48005CB199 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B871C18D2E433E48005CB199 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,42 +150,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8923C582E8E03A500B37FF0 /* StoreKitManager.swift in Sources */,
+				B8923C572E8E03A500B37FF0 /* OnboardingView.swift in Sources */,
+				B8923C5A2E8E03A500B37FF0 /* PaywallView.swift in Sources */,
 				B871C17B2E433E44005CB199 /* ContentView.swift in Sources */,
 				B871C1792E433E44005CB199 /* RemembranceApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B871C1812E433E48005CB199 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B871C18A2E433E48005CB199 /* RemembranceTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B871C18B2E433E48005CB199 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B871C1942E433E48005CB199 /* RemembranceUITests.swift in Sources */,
-				B871C1962E433E48005CB199 /* RemembranceUITestsLaunchTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		B871C1872E433E48005CB199 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B871C1742E433E44005CB199 /* Remembrance */;
-			targetProxy = B871C1862E433E48005CB199 /* PBXContainerItemProxy */;
-		};
-		B871C1912E433E48005CB199 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B871C1742E433E44005CB199 /* Remembrance */;
-			targetProxy = B871C1902E433E48005CB199 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		B871C1972E433E48005CB199 /* Debug */ = {
@@ -429,7 +301,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "stuartgrant.Remembrance";
+				PRODUCT_BUNDLE_IDENTIFIER = stuartgrant.Remembrance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -458,83 +330,11 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "stuartgrant.Remembrance";
+				PRODUCT_BUNDLE_IDENTIFIER = stuartgrant.Remembrance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		B871C19D2E433E48005CB199 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "stuartgrant.RemembranceTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Remembrance.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Remembrance";
-			};
-			name = Debug;
-		};
-		B871C19E2E433E48005CB199 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "stuartgrant.RemembranceTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Remembrance.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Remembrance";
-			};
-			name = Release;
-		};
-		B871C1A02E433E48005CB199 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "stuartgrant.RemembranceUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Remembrance;
-			};
-			name = Debug;
-		};
-		B871C1A12E433E48005CB199 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "stuartgrant.RemembranceUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Remembrance;
 			};
 			name = Release;
 		};
@@ -555,24 +355,6 @@
 			buildConfigurations = (
 				B871C19A2E433E48005CB199 /* Debug */,
 				B871C19B2E433E48005CB199 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B871C19C2E433E48005CB199 /* Build configuration list for PBXNativeTarget "RemembranceTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B871C19D2E433E48005CB199 /* Debug */,
-				B871C19E2E433E48005CB199 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B871C19F2E433E48005CB199 /* Build configuration list for PBXNativeTarget "RemembranceUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B871C1A02E433E48005CB199 /* Debug */,
-				B871C1A12E433E48005CB199 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
