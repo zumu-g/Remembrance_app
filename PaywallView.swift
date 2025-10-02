@@ -270,12 +270,12 @@ struct PaywallView: View {
                 .multilineTextAlignment(.center)
 
             HStack(spacing: 20) {
-                Link("Privacy Policy", destination: URL(string: "https://remembranceapp.com/privacy")!)
+                Link("Privacy Policy", destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/privacy.html")!)
                     .font(.system(size: 12))
                     .foregroundColor(.white.opacity(0.7))
                     .underline()
 
-                Link("Terms of Service", destination: URL(string: "https://remembranceapp.com/terms")!)
+                Link("Terms of Service", destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/terms.html")!)
                     .font(.system(size: 12))
                     .foregroundColor(.white.opacity(0.7))
                     .underline()
