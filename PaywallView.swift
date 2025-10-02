@@ -131,69 +131,127 @@ struct PaywallView: View {
 
     var subscriptionOptionsSection: some View {
         VStack(spacing: 15) {
-            ForEach(storeManager.products, id: \.id) { product in
-                VStack(spacing: 12) {
-                    // Product info card
-                    HStack {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(product.displayName)
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(.white)
+            if storeManager.products.isEmpty {
+                // Fallback options when products fail to load
+                VStack(spacing: 15) {
+                    subscriptionFallbackCard(title: "Monthly Subscription", price: "$2.99/month", productID: "com.remembrance.monthly")
+                    subscriptionFallbackCard(title: "Annual Subscription", price: "$19.99/year", badge: "Save 44%", productID: "com.remembrance.yearly")
+                }
 
-                            Text(product.description)
-                                .font(.system(size: 14))
-                                .foregroundColor(.white.opacity(0.8))
-                        }
-
-                        Spacer()
-
-                        VStack(alignment: .trailing, spacing: 3) {
-                            Text(product.displayPrice)
-                                .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
-
-                            if product.id.contains("yearly") {
-                                Text("Save 44%")
-                                    .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.green)
-                            }
-                        }
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(selectedProduct?.id == product.id ? Color.white.opacity(0.2) : Color.white.opacity(0.1))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(selectedProduct?.id == product.id ? Color(red: 179/255, green: 154/255, blue: 76/255) : Color.clear, lineWidth: 2)
-                    )
-
-                    // Clear Subscribe button
-                    Button(action: {
-                        selectedProduct = product
-                        Task {
-                            await purchaseProduct(product)
-                        }
-                    }) {
+                Text("Loading subscription options...")
+                    .font(.system(size: 14))
+                    .foregroundColor(.white.opacity(0.6))
+                    .padding(.top, 8)
+            } else {
+                ForEach(storeManager.products, id: \.id) { product in
+                    VStack(spacing: 12) {
+                        // Product info card
                         HStack {
-                            Spacer()
-                            if isPurchasing && selectedProduct?.id == product.id {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            } else {
-                                Text("Subscribe Now")
-                                    .font(.system(size: 16, weight: .semibold))
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(product.displayName)
+                                    .font(.system(size: 18, weight: .semibold))
                                     .foregroundColor(.white)
+
+                                Text(product.description)
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.white.opacity(0.8))
                             }
+
                             Spacer()
+
+                            VStack(alignment: .trailing, spacing: 3) {
+                                Text(product.displayPrice)
+                                    .font(.system(size: 20, weight: .bold))
+                                    .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+
+                                if product.id.contains("yearly") {
+                                    Text("Save 44%")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.green)
+                                }
+                            }
                         }
                         .padding()
-                        .background(Color(red: 179/255, green: 154/255, blue: 76/255))
-                        .cornerRadius(10)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(selectedProduct?.id == product.id ? Color.white.opacity(0.2) : Color.white.opacity(0.1))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(selectedProduct?.id == product.id ? Color(red: 179/255, green: 154/255, blue: 76/255) : Color.clear, lineWidth: 2)
+                        )
+
+                        // Clear Subscribe button
+                        Button(action: {
+                            selectedProduct = product
+                            Task {
+                                await purchaseProduct(product)
+                            }
+                        }) {
+                            HStack {
+                                Spacer()
+                                if isPurchasing && selectedProduct?.id == product.id {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                } else {
+                                    Text("Subscribe Now")
+                                        .font(.system(size: 16, weight: .semibold))
+                                        .foregroundColor(.white)
+                                }
+                                Spacer()
+                            }
+                            .padding()
+                            .background(Color(red: 179/255, green: 154/255, blue: 76/255))
+                            .cornerRadius(10)
+                        }
+                        .disabled(isPurchasing)
                     }
-                    .disabled(isPurchasing)
                 }
+            }
+        }
+    }
+
+    private func subscriptionFallbackCard(title: String, price: String, badge: String? = nil, productID: String) -> some View {
+        VStack(spacing: 12) {
+            HStack {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(title)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 3) {
+                    Text(price)
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+
+                    if let badge = badge {
+                        Text(badge)
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.green)
+                    }
+                }
+            }
+            .padding()
+            .background(Color.white.opacity(0.1))
+            .cornerRadius(12)
+
+            Button(action: {
+                errorMessage = "Products are still loading. Please try again in a moment."
+                showError = true
+            }) {
+                HStack {
+                    Spacer()
+                    Text("Subscribe Now")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.white)
+                    Spacer()
+                }
+                .padding()
+                .background(Color(red: 179/255, green: 154/255, blue: 76/255))
+                .cornerRadius(10)
             }
         }
     }
