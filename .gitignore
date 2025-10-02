@@ -1,0 +1,25 @@
+# Xcode
+.DS_Store
+*.xcuserstate
+*.xcuserdatad
+
+# Build
+build/
+DerivedData/
+*.xcarchive
+
+# User-specific files
+xcuserdata/
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.pbxuser
+
+# macOS
+.Spotlight-V100
+.Trashes
+
+# Backup files
+*~
+*.bak
+*[0-9].swift
