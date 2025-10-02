@@ -239,20 +239,27 @@ struct PaywallView: View {
             .cornerRadius(12)
 
             Button(action: {
-                errorMessage = "Products are still loading. Please try again in a moment."
-                showError = true
+                Task {
+                    await retryPurchase(productID: productID)
+                }
             }) {
                 HStack {
                     Spacer()
-                    Text("Subscribe Now")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.white)
+                    if isPurchasing {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    } else {
+                        Text("Subscribe Now")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
                     Spacer()
                 }
                 .padding()
                 .background(Color(red: 179/255, green: 154/255, blue: 76/255))
                 .cornerRadius(10)
             }
+            .disabled(isPurchasing)
         }
     }
 
@@ -315,6 +322,31 @@ struct PaywallView: View {
             dismiss()
         } else {
             errorMessage = "No active subscriptions found"
+            showError = true
+        }
+    }
+
+    private func retryPurchase(productID: String) async {
+        isPurchasing = true
+        defer { isPurchasing = false }
+
+        // Try to reload products first
+        await storeManager.loadProducts()
+
+        // Wait a moment for products to load
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+
+        // Now try to find the product
+        if let product = storeManager.products.first(where: { $0.id == productID }) {
+            do {
+                _ = try await storeManager.purchase(product)
+                dismiss()
+            } catch {
+                errorMessage = "Purchase failed: \(error.localizedDescription)"
+                showError = true
+            }
+        } else {
+            errorMessage = "Unable to load subscription options. Please check your internet connection and try again."
             showError = true
         }
     }
