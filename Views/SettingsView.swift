@@ -157,10 +157,10 @@ struct SettingsView: View {
                     .foregroundColor(.secondary)
             }
             
-            Link("Privacy Policy", destination: URL(string: "https://example.com/privacy")!)
+            Link("Privacy Policy", destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/privacy.html")!)
                 .foregroundColor(.blue)
             
-            Link("Support", destination: URL(string: "mailto:support@example.com")!)
+            Link("Support", destination: URL(string: "mailto:support@remembranceapp.com")!)
                 .foregroundColor(.blue)
         }
     }

@@ -10,6 +10,7 @@ struct SettingsTabView: View {
     @State private var showingMainPhotoImport = false
     @State private var showingPaywall = false
     @State private var isPurchasing = false
+    @State private var purchasingProductId: String? = nil
     @State private var showPurchaseError = false
     @State private var purchaseErrorMessage = ""
     @StateObject private var storeManager = StoreKitManager.shared
@@ -57,6 +58,13 @@ struct SettingsTabView: View {
             print("⚙️ SettingsTabView appeared - loading notification settings")
             checkNotificationStatus()
             loadSavedTime()
+            
+            // Refresh subscription status
+            Task {
+                await storeManager.loadProducts()
+                await storeManager.updatePurchasedProducts()
+                await storeManager.checkSubscriptionStatus()
+            }
         }
         .sheet(isPresented: $showingPaywall) {
             PaywallView()
@@ -218,7 +226,7 @@ struct SettingsTabView: View {
                 subscriptionStatus
 
                 // Subscribe Buttons (if not subscribed)
-                if storeManager.subscriptionStatus != .subscribed {
+                if storeManager.subscriptionStatus != .active {
                     Divider()
                         .background(Color.white.opacity(0.1))
 
@@ -247,16 +255,16 @@ struct SettingsTabView: View {
                     Text("Free Trial")
                         .font(.system(size: 16, weight: .medium, design: .serif))
                         .foregroundColor(.white)
-                    Text("\(storeManager.trialDaysRemaining) days remaining")
+                    Text("\(storeManager.trialDaysRemaining ?? 0) days remaining")
                         .font(.system(size: 13, weight: .regular, design: .serif))
                         .foregroundColor(.white.opacity(0.6))
                 }
-            } else if storeManager.subscriptionStatus == .subscribed {
+            } else if storeManager.subscriptionStatus == .active {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
                     .font(.system(size: 18))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Premium Member")
+                    Text(storeManager.currentSubscriptionType == "monthly" ? "Monthly Subscription" : storeManager.currentSubscriptionType == "yearly" ? "Annual Subscription" : "Premium Member")
                         .font(.system(size: 16, weight: .medium, design: .serif))
                         .foregroundColor(.white)
                     Text("Full access to all features")
@@ -276,13 +284,17 @@ struct SettingsTabView: View {
                         .foregroundColor(.white.opacity(0.6))
                 }
             } else {
-                Image(systemName: "ellipsis.circle")
+                // Not subscribed state
+                Image(systemName: "questionmark.circle")
                     .foregroundColor(.white.opacity(0.5))
                     .font(.system(size: 18))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Checking Status...")
+                    Text("Not Subscribed")
                         .font(.system(size: 16, weight: .medium, design: .serif))
                         .foregroundColor(.white)
+                    Text("Get premium access")
+                        .font(.system(size: 13, weight: .regular, design: .serif))
+                        .foregroundColor(.white.opacity(0.6))
                 }
             }
             Spacer()
@@ -312,7 +324,7 @@ struct SettingsTabView: View {
                             .foregroundColor(.white.opacity(0.7))
                     }
                     Spacer()
-                    if isPurchasing {
+                    if isPurchasing && purchasingProductId == monthlyProduct?.id {
                         ProgressView()
                             .tint(.white)
                     } else {
@@ -354,7 +366,7 @@ struct SettingsTabView: View {
                             .foregroundColor(.white.opacity(0.7))
                     }
                     Spacer()
-                    if isPurchasing {
+                    if isPurchasing && purchasingProductId == yearlyProduct?.id {
                         ProgressView()
                             .tint(.white)
                     } else {
@@ -373,7 +385,7 @@ struct SettingsTabView: View {
 
     private var managementLinks: some View {
         VStack(spacing: 10) {
-            if storeManager.subscriptionStatus == .subscribed {
+            if storeManager.subscriptionStatus == .active {
                 Button(action: {
                     if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
                         UIApplication.shared.open(url)
@@ -518,7 +530,11 @@ struct SettingsTabView: View {
 
     private func purchaseProduct(_ product: Product) async {
         isPurchasing = true
-        defer { isPurchasing = false }
+        purchasingProductId = product.id
+        defer { 
+            isPurchasing = false
+            purchasingProductId = nil
+        }
 
         do {
             let result = try await storeManager.purchase(product)
