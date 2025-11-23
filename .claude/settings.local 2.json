@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(git clone:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(rm:*)",
+      "Bash(mv:*)",
+      "Read(//Users/stuartgrant_mbp13/Library/**)",
+      "Bash(cp:*)",
+      "Bash(cd:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit - Remembrance app\n\nBased on memorial photo gallery app with stable daily photo selection,\n365 mixed daily quotes, photo persistence across app restarts,\ngesture-safe photo display, and more features.\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push -u origin main)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"Fix asset compilation error - rename icon files to remove spaces\")",
+      "Bash(git push origin main)",
+      "Read(//var/folders/4t/7c7y02rx3nbfk0zlsktn6j840000gn/T/TemporaryItems/NSIRD_screencaptureui_to1jWR/**)",
+      "Bash(git commit -m \"Fix Xcode build paths - move all source files to correct directory level\")",
+      "Bash(git commit:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(ruby:*)",
+      "Bash(gem install:*)",
+      "Read(//private/tmp/**)",
+      "Read(//tmp/Remembrance.xcarchive/**)",
+      "Read(//Users/stu_imac/Library/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
