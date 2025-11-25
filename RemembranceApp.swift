@@ -1948,7 +1948,7 @@ struct SimpleSettingsView: View {
                             .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
                             .kerning(0.5)
 
-                        if storeManager.subscriptionStatus != .active {
+                        if storeManager.subscriptionStatus != .subscribed {
                             // Upgrade Button
                             Button(action: {
                                 showPremiumUpgrade = true
@@ -1966,7 +1966,7 @@ struct SimpleSettingsView: View {
                                         }
 
                                         if storeManager.subscriptionStatus == .trial {
-                                            Text("\(storeManager.trialDaysRemaining ?? 0) days left in trial")
+                                            Text("\(storeManager.trialDaysRemaining) days left in trial")
                                                 .font(.system(size: 14, design: .serif))
                                                 .foregroundColor(Color(red: 0.7, green: 0.6, blue: 0.3))
                                         } else {
@@ -2336,7 +2336,7 @@ struct PremiumUpgradeView: View {
                                 .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95))
 
                             if storeManager.subscriptionStatus == .trial {
-                                Text("\(storeManager.trialDaysRemaining ?? 0) days remaining")
+                                Text("\(storeManager.trialDaysRemaining) days remaining")
                                     .font(.system(size: 14, design: .serif))
                                     .foregroundColor(Color(red: 0.98, green: 0.97, blue: 0.95).opacity(0.6))
                             }
@@ -2443,7 +2443,7 @@ struct PremiumUpgradeView: View {
                         Button(action: {
                             Task {
                                 await storeManager.restorePurchases()
-                                if storeManager.subscriptionStatus == .active {
+                                if storeManager.subscriptionStatus == .subscribed {
                                     dismiss()
                                 }
                             }
