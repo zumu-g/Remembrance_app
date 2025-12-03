@@ -139,24 +139,66 @@ struct PaywallView: View {
 
     var subscriptionOptionsSection: some View {
         VStack(spacing: 15) {
-            Text("Subscription Options")
+            Text("Choose Your Plan")
                 .font(.system(size: 20, weight: .bold))
                 .foregroundColor(.white)
                 .padding(.bottom, 5)
-            
+
+            // Clear description of what subscription unlocks
+            VStack(alignment: .leading, spacing: 6) {
+                Text("With Premium you get:")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.9))
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+                        .font(.system(size: 12))
+                    Text("Unlimited photo storage for all your memories")
+                        .font(.system(size: 13))
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+                        .font(.system(size: 12))
+                    Text("365 unique inspirational daily quotes")
+                        .font(.system(size: 13))
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+                        .font(.system(size: 12))
+                    Text("Full timeline access to view past memories")
+                        .font(.system(size: 13))
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+                        .font(.system(size: 12))
+                    Text("Daily reminder notifications")
+                        .font(.system(size: 13))
+                        .foregroundColor(.white.opacity(0.8))
+                }
+            }
+            .padding()
+            .background(Color.white.opacity(0.08))
+            .cornerRadius(10)
+
             if storeManager.products.isEmpty {
                 // Fallback options when products fail to load
                 VStack(spacing: 15) {
                     subscriptionFallbackCard(
-                        title: "Monthly Subscription", 
+                        title: "Monthly Subscription",
                         price: "$2.99/month",
                         duration: "Renews every month",
                         features: "All premium features included",
                         productID: "com.remembrance.monthly"
                     )
                     subscriptionFallbackCard(
-                        title: "Annual Subscription", 
-                        price: "$19.99/year", 
+                        title: "Annual Subscription",
+                        price: "$19.99/year",
                         duration: "Renews every 12 months",
                         features: "All premium features included • Save 44% vs monthly",
                         badge: "Best Value",
@@ -198,7 +240,7 @@ struct PaywallView: View {
                                     }
                                 }
                             }
-                            
+
                             Text(getSubscriptionFeatures(for: product))
                                 .font(.system(size: 13))
                                 .foregroundColor(.white.opacity(0.9))
@@ -213,6 +255,21 @@ struct PaywallView: View {
                             RoundedRectangle(cornerRadius: 12)
                                 .stroke(selectedProduct?.id == product.id ? Color(red: 179/255, green: 154/255, blue: 76/255) : Color.clear, lineWidth: 2)
                         )
+
+                        // Legal links before purchase button
+                        HStack(spacing: 12) {
+                            Link("Privacy Policy", destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/privacy.html")!)
+                                .font(.system(size: 11))
+                                .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+
+                            Text("•")
+                                .foregroundColor(.white.opacity(0.4))
+
+                            Link("Terms of Use", destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/terms.html")!)
+                                .font(.system(size: 11))
+                                .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+                        }
+                        .padding(.vertical, 4)
 
                         // Clear Subscribe button
                         Button(action: {
@@ -252,7 +309,7 @@ struct PaywallView: View {
                         Text(title)
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.white)
-                        
+
                         Text(duration)
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
@@ -272,7 +329,7 @@ struct PaywallView: View {
                         }
                     }
                 }
-                
+
                 Text(features)
                     .font(.system(size: 13))
                     .foregroundColor(.white.opacity(0.9))
@@ -281,6 +338,21 @@ struct PaywallView: View {
             .padding()
             .background(Color.white.opacity(0.1))
             .cornerRadius(12)
+
+            // Legal links before purchase button
+            HStack(spacing: 12) {
+                Link("Privacy Policy", destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/privacy.html")!)
+                    .font(.system(size: 11))
+                    .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+
+                Text("•")
+                    .foregroundColor(.white.opacity(0.4))
+
+                Link("Terms of Use", destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/terms.html")!)
+                    .font(.system(size: 11))
+                    .foregroundColor(Color(red: 179/255, green: 154/255, blue: 76/255))
+            }
+            .padding(.vertical, 4)
 
             Button(action: {
                 Task {

@@ -434,6 +434,57 @@ struct SettingsTabView: View {
                         .foregroundColor(.white.opacity(0.6))
                 }
                 .padding(16)
+
+                Divider()
+                    .background(Color.white.opacity(0.1))
+
+                // Privacy Policy Link
+                Link(destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/privacy.html")!) {
+                    HStack {
+                        Text("Privacy Policy")
+                            .font(.system(size: 15, weight: .regular, design: .serif))
+                            .foregroundColor(.white)
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 12))
+                            .foregroundColor(.white.opacity(0.5))
+                    }
+                    .padding(16)
+                }
+
+                Divider()
+                    .background(Color.white.opacity(0.1))
+
+                // Terms of Use Link
+                Link(destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/terms.html")!) {
+                    HStack {
+                        Text("Terms of Use")
+                            .font(.system(size: 15, weight: .regular, design: .serif))
+                            .foregroundColor(.white)
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 12))
+                            .foregroundColor(.white.opacity(0.5))
+                    }
+                    .padding(16)
+                }
+
+                Divider()
+                    .background(Color.white.opacity(0.1))
+
+                // Support Link
+                Link(destination: URL(string: "https://zumu-g.github.io/Remembrance_app/docs/support.html")!) {
+                    HStack {
+                        Text("Support")
+                            .font(.system(size: 15, weight: .regular, design: .serif))
+                            .foregroundColor(.white)
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 12))
+                            .foregroundColor(.white.opacity(0.5))
+                    }
+                    .padding(16)
+                }
             }
             .background(Color.white.opacity(0.08))
             .cornerRadius(12)
