@@ -1,4 +1,32 @@
-# 365 Days of Mum - Project Status
+# Remembrance App - Project Status
+
+## 🚨 CURRENT STATUS: App Store Resubmission Required
+
+**Date**: December 3, 2025
+**Issue**: App was rejected on December 2, 2025
+**Action Required**: Build new archive in Xcode and resubmit
+
+### App Store Rejection Fixes Applied (Dec 3, 2025):
+
+| Guideline | Issue | Fix Applied |
+|-----------|-------|-------------|
+| 1.5 | Support URL required login | Created `docs/support.html` - no login required |
+| 3.1.2 | Missing legal links in binary | Added Privacy/Terms links to Settings AND before purchase buttons |
+| 3.1.2 | Unclear subscription features | Added "With Premium you get:" section with feature list |
+
+### Files Modified:
+- `PaywallView.swift` - Added legal links before purchase buttons, clearer feature descriptions
+- `SettingsTabView.swift` - Added Privacy Policy, Terms of Use, Support links in About section
+- `docs/support.html` - NEW: Standalone support page (no login required)
+
+### To Complete Resubmission:
+1. ✅ Code changes committed and pushed to GitHub
+2. ⏳ **IN PROGRESS**: Build new archive in Xcode (Product > Archive)
+3. ⬚ Upload to App Store Connect
+4. ⬚ Update Support URL in App Store Connect to: `https://zumu-g.github.io/Remembrance_app/docs/support.html`
+5. ⬚ Resubmit app with In-App Purchase products
+
+---
 
 ## ✅ Completed Fixes
 
