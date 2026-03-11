@@ -116,30 +116,42 @@ export async function createPostizDraft(options: {
 }): Promise<{ id: string }> {
   const results: string[] = [];
 
-  // Post to TikTok as draft
-  try {
-    const tikTokResult = await publishToTikTok({
-      caption: options.caption,
-      imageUrls: options.imageUrls,
-      isDraft: true,
-    });
-    if (tikTokResult) results.push(`tiktok:${tikTokResult.postSubmissionId}`);
-  } catch (err) {
-    console.error('TikTok post failed:', err);
-    throw err;
+  // Post to TikTok as draft (requires at least 1 image/video)
+  if (options.imageUrls.length > 0) {
+    try {
+      const tikTokResult = await publishToTikTok({
+        caption: options.caption,
+        imageUrls: options.imageUrls,
+        isDraft: true,
+      });
+      if (tikTokResult) results.push(`tiktok:${tikTokResult.postSubmissionId}`);
+    } catch (err) {
+      console.error('TikTok post failed:', err);
+      throw err;
+    }
+  } else {
+    console.log('Skipping TikTok — no images attached');
   }
 
-  // Post to Instagram
-  try {
-    const igResult = await publishToInstagram({
-      caption: options.caption,
-      imageUrls: options.imageUrls,
-    });
-    if (igResult) results.push(`instagram:${igResult.postSubmissionId}`);
-  } catch (err) {
-    console.error('Instagram post failed:', err);
-    // Don't throw — TikTok might have succeeded
-    if (results.length === 0) throw err;
+  // Post to Instagram (requires at least 1 image)
+  if (options.imageUrls.length > 0) {
+    try {
+      const igResult = await publishToInstagram({
+        caption: options.caption,
+        imageUrls: options.imageUrls,
+      });
+      if (igResult) results.push(`instagram:${igResult.postSubmissionId}`);
+    } catch (err) {
+      console.error('Instagram post failed:', err);
+      // Don't throw — TikTok might have succeeded
+      if (results.length === 0) throw err;
+    }
+  } else {
+    console.log('Skipping Instagram — no images attached');
+  }
+
+  if (results.length === 0 && options.imageUrls.length === 0) {
+    throw new Error('Cannot publish — TikTok and Instagram both require images. Add images and try again.');
   }
 
   return { id: results.join(',') };
