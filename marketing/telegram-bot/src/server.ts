@@ -40,6 +40,7 @@ app.post('/drafts', webhookAuth, async (req, res) => {
     const id = createPost(body);
 
     // Auto-generate images if prompts provided but no images, and fal.ai is configured
+    let imageGenWarning: string | undefined;
     if (isFalConfigured() && body.imagePrompts && body.imagePrompts.length > 0 && (!body.imageUrls || body.imageUrls.length === 0)) {
       console.log(`Generating ${body.imagePrompts.length} images for post #${id}...`);
       try {
@@ -49,6 +50,7 @@ app.post('/drafts', webhookAuth, async (req, res) => {
         }
       } catch (err) {
         console.error('Image generation failed:', err);
+        imageGenWarning = `Image generation failed: ${err instanceof Error ? err.message : 'Unknown error'}. Post created without images.`;
       }
     }
 
@@ -66,6 +68,7 @@ app.post('/drafts', webhookAuth, async (req, res) => {
       id: post.id,
       status: post.status,
       message: 'Post submitted for approval. Check Telegram.',
+      ...(imageGenWarning ? { warning: imageGenWarning } : {}),
     });
   } catch (err) {
     console.error('Error creating draft:', err);

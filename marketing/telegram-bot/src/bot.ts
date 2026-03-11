@@ -32,6 +32,20 @@ const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!, {
 // Track conversation state for edits/rejections
 const awaitingInput = new Map<number, AwaitingInput>();
 
+// Prevent double-processing of approve actions
+const approvalInProgress = new Set<number>();
+
+// Safely parse image_urls JSON, returning empty array on failure
+function safeParseImageUrls(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 // Auth middleware — only respond to authorized user
 bot.use(authMiddleware);
 
@@ -159,17 +173,36 @@ bot.command('report', (ctx) => {
 
   const postId = parseInt(parts[0], 10);
   const platform = parts[1].toLowerCase();
-  const views = parseInt(parts[2], 10) || 0;
-  const likes = parseInt(parts[3], 10) || 0;
-  const comments = parseInt(parts[4], 10) || 0;
-  const shares = parseInt(parts[5], 10) || 0;
+  const views = parseInt(parts[2], 10);
+  const likes = parseInt(parts[3], 10);
+  const comments = parseInt(parts[4], 10);
+  const shares = parseInt(parts[5], 10);
+
+  if (isNaN(postId) || isNaN(views) || isNaN(likes)) {
+    return ctx.reply('Invalid numbers. Post ID, views, and likes must be valid numbers.');
+  }
+
+  if (views < 0 || likes < 0 || (comments < 0 && !isNaN(comments)) || (shares < 0 && !isNaN(shares))) {
+    return ctx.reply('Metric values must be non-negative.');
+  }
+
+  const validPlatforms = ['tiktok', 'instagram', 'facebook', 'twitter', 'youtube'];
+  if (!validPlatforms.includes(platform)) {
+    return ctx.reply(
+      `Invalid platform: "${platform}".\nValid platforms: ${validPlatforms.join(', ')}`
+    );
+  }
 
   const post = db.getPost(postId);
   if (!post) {
     return ctx.reply(`Post #${postId} not found.`);
   }
 
-  db.recordMetrics(postId, platform, { views, likes, comments, shares });
+  if (post.status !== 'published' && post.status !== 'approved') {
+    return ctx.reply(`Post #${postId} is "${post.status}" — metrics can only be logged for published or approved posts.`);
+  }
+
+  db.recordMetrics(postId, platform, { views, likes, comments: comments || 0, shares: shares || 0 });
 
   // Auto-categorize hook if not already done
   if (!(post as any).hook_category || (post as any).hook_category === 'other') {
@@ -247,6 +280,16 @@ bot.action(/^approve_(\d+)$/, async (ctx) => {
     return ctx.answerCbQuery('Post not found.');
   }
 
+  if (post.status !== 'pending' && post.status !== 'failed') {
+    return ctx.answerCbQuery(`Post already ${post.status}.`);
+  }
+
+  if (approvalInProgress.has(id)) {
+    return ctx.answerCbQuery('Approval already in progress...');
+  }
+  approvalInProgress.add(id);
+
+  try {
   db.updateStatus(id, 'approved');
   await ctx.answerCbQuery('Approved! ✅');
   await ctx.editMessageText(
@@ -257,7 +300,7 @@ bot.action(/^approve_(\d+)$/, async (ctx) => {
   // Try to send to Postiz
   if (isPostizConfigured()) {
     try {
-      const imageUrls = post.image_urls ? JSON.parse(post.image_urls) as string[] : [];
+      const imageUrls = safeParseImageUrls(post.image_urls);
       const integrationIds = getIntegrationIds(post.platform);
 
       const result = await createPostizDraft({
@@ -289,6 +332,9 @@ bot.action(/^approve_(\d+)$/, async (ctx) => {
     }
   } else {
     await ctx.reply(`✅ Post #${id} approved. Blotato not configured — publish manually.`, { parse_mode: 'HTML' });
+  }
+  } finally {
+    approvalInProgress.delete(id);
   }
 });
 
@@ -403,7 +449,7 @@ export async function notifyNewPost(post: PostRecord): Promise<void> {
   const chatId = parseInt(process.env.TELEGRAM_AUTHORIZED_USER_ID || '0', 10);
   if (!chatId) return;
 
-  const imageUrls = post.image_urls ? JSON.parse(post.image_urls) as string[] : [];
+  const imageUrls = safeParseImageUrls(post.image_urls);
 
   // Send images first if available
   if (imageUrls.length > 0) {
@@ -426,21 +472,25 @@ export async function notifyNewPost(post: PostRecord): Promise<void> {
 
   // Send post details with action buttons
   const text = formatPostPreview(post);
-  const msg = await bot.telegram.sendMessage(chatId, text, {
-    parse_mode: 'HTML',
-    ...Markup.inlineKeyboard([
-      [
-        Markup.button.callback('✅ Approve', `approve_${post.id}`),
-        Markup.button.callback('❌ Reject', `reject_${post.id}`),
-      ],
-      [
-        Markup.button.callback('✏️ Edit Hook', `edit_hook_${post.id}`),
-        Markup.button.callback('✏️ Edit Caption', `edit_caption_${post.id}`),
-      ],
-    ]),
-  });
+  try {
+    const msg = await bot.telegram.sendMessage(chatId, text, {
+      parse_mode: 'HTML',
+      ...Markup.inlineKeyboard([
+        [
+          Markup.button.callback('✅ Approve', `approve_${post.id}`),
+          Markup.button.callback('❌ Reject', `reject_${post.id}`),
+        ],
+        [
+          Markup.button.callback('✏️ Edit Hook', `edit_hook_${post.id}`),
+          Markup.button.callback('✏️ Edit Caption', `edit_caption_${post.id}`),
+        ],
+      ]),
+    });
 
-  db.setTelegramIds(post.id, msg.message_id, chatId);
+    db.setTelegramIds(post.id, msg.message_id, chatId);
+  } catch (err) {
+    console.error(`Failed to send notification for post #${post.id}:`, err);
+  }
 }
 
 export default bot;

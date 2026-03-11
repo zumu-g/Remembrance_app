@@ -79,7 +79,7 @@ const setReviewerNoteStmt = db.prepare(`
 `);
 
 const setPostizStmt = db.prepare(`
-  UPDATE posts SET postiz_post_id = @postiz_id, postiz_response = @response, status = 'published', published_at = datetime('now') WHERE id = @id
+  UPDATE posts SET postiz_post_id = @postiz_id, postiz_response = @response WHERE id = @id
 `);
 
 export function createPost(draft: DraftPost): number {
