@@ -1,0 +1,9 @@
+version: "Apple Swift version 5.9.2 (swiftlang-5.9.2.2.56 clang-1500.1.0.2.5)"
+options: "c78c56ef686714442710dccb533ace524b9bc9107f6c6cefa138cf86c015f88e"
+build_start_time: [1758594284, 643924000]
+build_end_time: [1758594309, 599698000]
+inputs:
+  "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/ContentView.swift": [1758586401, 6589898]
+  "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/RemembranceApp.swift": [1758594272, 145260017]
+  ? "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Release-iphoneos/Remembrance.build/DerivedSources/GeneratedAssetSymbols.swift"
+  : [1758594199, 66182467]
