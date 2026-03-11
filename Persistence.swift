@@ -31,7 +31,9 @@ struct PersistenceController {
         container = NSPersistentContainer(name: "DataModel")
         
         if inMemory {
-            container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+            if let description = container.persistentStoreDescriptions.first {
+                description.url = URL(fileURLWithPath: "/dev/null")
+            }
         } else {
             // Ensure we're using the default persistent store location
             let storeURL = NSPersistentContainer.defaultDirectoryURL()

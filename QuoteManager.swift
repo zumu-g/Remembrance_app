@@ -29,7 +29,6 @@ class QuoteManager: ObservableObject {
     }
     
     func loadTodaysQuote() {
-        // Use same logic as photos - random selection with prime number hash
         let request: NSFetchRequest<Quote> = Quote.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "dayNumber", ascending: true)]
         
@@ -37,26 +36,83 @@ class QuoteManager: ObservableObject {
             let allQuotes = try viewContext.fetch(request)
             
             if !allQuotes.isEmpty {
-                let calendar = Calendar.current
-                let today = Date()
-                let dayOfYear = calendar.ordinality(of: .day, in: .year, for: today) ?? 1
-                let year = calendar.component(.year, from: today)
-                let yearOffset = year - 2023
+                let selectedQuote = getQuoteWithTracking(from: allQuotes)
+                currentQuote = selectedQuote
                 
-                // Use prime number hash for true randomization (same as photo system)
-                let hash = (dayOfYear + yearOffset) * 73 + 37
-                let quoteIndex = hash % allQuotes.count
-                currentQuote = allQuotes[quoteIndex]
-                
-                print("Quote selection - Day: \(dayOfYear), Year offset: \(yearOffset), Hash: \(hash), Index: \(quoteIndex), Total quotes: \(allQuotes.count)")
+                print("Quote selection - Selected quote: \(selectedQuote?.text?.prefix(50) ?? "Unknown"), Total quotes: \(allQuotes.count)")
             }
         } catch {
             print("Error loading today's quote: \(error)")
         }
     }
     
+    private func getQuoteWithTracking(from quotes: [Quote]) -> Quote? {
+        // Get used quote IDs from UserDefaults
+        let usedQuoteIDs = UserDefaults.standard.array(forKey: "usedQuoteIDs") as? [String] ?? []
+        
+        // Find unused quotes
+        let unusedQuotes = quotes.filter { quote in
+            guard let quoteID = quote.id?.uuidString else { return false }
+            return !usedQuoteIDs.contains(quoteID)
+        }
+        
+        // If all quotes have been used, reset the tracking
+        let quotesToSelect = unusedQuotes.isEmpty ? quotes : unusedQuotes
+        
+        if unusedQuotes.isEmpty {
+            UserDefaults.standard.removeObject(forKey: "usedQuoteIDs")
+            print("All quotes used - resetting quote tracking for new cycle")
+        }
+        
+        // Select random quote from available pool
+        guard !quotesToSelect.isEmpty else { return nil }
+        
+        let calendar = Calendar.current
+        let today = Date()
+        let dayOfYear = calendar.ordinality(of: .day, in: .year, for: today) ?? 1
+        let year = calendar.component(.year, from: today)
+        let yearOffset = year - 2023
+        
+        // Use prime number hash for selection
+        let hash = (dayOfYear + yearOffset) * 73 + 37
+        let selectedIndex = hash % quotesToSelect.count
+        let selectedQuote = quotesToSelect[selectedIndex]
+        
+        // Mark this quote as used
+        if let quoteID = selectedQuote.id?.uuidString {
+            var updatedUsedIDs = usedQuoteIDs
+            updatedUsedIDs.append(quoteID)
+            UserDefaults.standard.set(updatedUsedIDs, forKey: "usedQuoteIDs")
+            
+            print("Marked quote as used. Used count: \(updatedUsedIDs.count)/\(quotes.count)")
+        }
+        
+        return selectedQuote
+    }
+    
     func getQuoteForDay(_ dayNumber: Int) -> Quote? {
         return quotes.first { $0.dayNumber == Int32(dayNumber) }
+    }
+    
+    // MARK: - Quote Tracking Management
+    
+    func getQuoteTrackingStatus() -> (used: Int, total: Int, percentComplete: Double) {
+        let usedQuoteIDs = UserDefaults.standard.array(forKey: "usedQuoteIDs") as? [String] ?? []
+        let totalQuotes = quotes.count
+        let percentComplete = totalQuotes > 0 ? Double(usedQuoteIDs.count) / Double(totalQuotes) * 100 : 0
+        
+        return (used: usedQuoteIDs.count, total: totalQuotes, percentComplete: percentComplete)
+    }
+    
+    func resetQuoteTracking() {
+        UserDefaults.standard.removeObject(forKey: "usedQuoteIDs")
+        print("Quote tracking reset - all quotes available again")
+    }
+    
+    func isQuoteUsed(_ quote: Quote) -> Bool {
+        guard let quoteID = quote.id?.uuidString else { return false }
+        let usedQuoteIDs = UserDefaults.standard.array(forKey: "usedQuoteIDs") as? [String] ?? []
+        return usedQuoteIDs.contains(quoteID)
     }
     
     private func checkAndInitializeQuotes() {
@@ -512,6 +568,14 @@ class QuoteViewModel: ObservableObject {
     
     func getQuotesCount() -> Int {
         return quoteManager.quotes.count
+    }
+    
+    func getQuoteTrackingStatus() -> (used: Int, total: Int, percentComplete: Double) {
+        return quoteManager.getQuoteTrackingStatus()
+    }
+    
+    func resetQuoteTracking() {
+        quoteManager.resetQuoteTracking()
     }
     
     func addCustomQuote(text: String, author: String?, dayNumber: Int32) async -> Bool {

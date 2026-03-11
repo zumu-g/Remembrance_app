@@ -600,12 +600,15 @@ class PhotoStore: ObservableObject {
     
     // Save images to disk
     func saveImages() {
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        guard let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("PhotoStore.saveImages: Could not access documents directory")
+            return
+        }
         let imageDirectory = documentsPath.appendingPathComponent("MemorialImages")
-        
+
         // Create directory if it doesn't exist
         try? FileManager.default.createDirectory(at: imageDirectory, withIntermediateDirectories: true)
-        
+
         print("PhotoStore.saveImages: Starting save of \(images.count) images")
         
         // First, clean up ALL existing image files
@@ -643,9 +646,12 @@ class PhotoStore: ObservableObject {
         
         // Perform file operations on background queue for better performance
         DispatchQueue.global(qos: .userInitiated).async {
-            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            guard let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                print("PhotoStore.loadImages: Could not access documents directory")
+                return
+            }
             let imageDirectory = documentsPath.appendingPathComponent("MemorialImages")
-            
+
             guard FileManager.default.fileExists(atPath: imageDirectory.path) else {
                 print("PhotoStore.loadImages: No saved images found")
                 return
@@ -714,9 +720,12 @@ class PhotoStore: ObservableObject {
     
     // Fast save - optimized for deletions
     private func quickSaveImages() {
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        guard let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            print("PhotoStore.quickSaveImages: Could not access documents directory")
+            return
+        }
         let imageDirectory = documentsPath.appendingPathComponent("MemorialImages")
-        
+
         // Create directory if needed
         try? FileManager.default.createDirectory(at: imageDirectory, withIntermediateDirectories: true)
         

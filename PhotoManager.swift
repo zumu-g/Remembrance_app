@@ -277,9 +277,12 @@ class PhotoManager: ObservableObject {
             return false
         }
         
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            logPhotoError("saveImageToDocuments", error: AppError.photoSaveFailed(context: "Could not access documents directory"))
+            return false
+        }
         let fileURL = documentsDirectory.appendingPathComponent(filename)
-        
+
         do {
             // Ensure the documents directory exists
             try FileManager.default.createDirectory(at: documentsDirectory, withIntermediateDirectories: true, attributes: nil)
@@ -371,9 +374,9 @@ class PhotoManager: ObservableObject {
     func getImageFileSize(for photo: Photo) -> Int64 {
         guard let imagePath = photo.imagePath else { return 0 }
         
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return 0 }
         let fileURL = documentsDirectory.appendingPathComponent(imagePath)
-        
+
         do {
             let attributes = try FileManager.default.attributesOfItem(atPath: fileURL.path)
             return attributes[.size] as? Int64 ?? 0
@@ -393,7 +396,7 @@ class PhotoManager: ObservableObject {
     }
     
     func loadImageFromDocuments(filename: String) -> UIImage? {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
         let fileURL = documentsDirectory.appendingPathComponent(filename)
         
         guard FileManager.default.fileExists(atPath: fileURL.path) else {
@@ -457,9 +460,9 @@ class PhotoManager: ObservableObject {
                     continue
                 }
                 
-                let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { continue }
                 let fileURL = documentsDirectory.appendingPathComponent(imagePath)
-                
+
                 if !FileManager.default.fileExists(atPath: fileURL.path) {
                     // Image file is missing - remove the photo record
                     logPhotoOperation("verifyAndRepairPhotoStorage", details: "Removing photo record for missing file: \(imagePath)")
@@ -489,7 +492,10 @@ class PhotoManager: ObservableObject {
     }
     
     func getDocumentsDirectory() -> URL {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return URL(fileURLWithPath: NSTemporaryDirectory())
+        }
+        return directory
     }
     
     func getAllPhotoFilesInDocuments() -> [String] {
