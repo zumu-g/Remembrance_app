@@ -109,7 +109,7 @@ class PhotoDataManager: ObservableObject {
     }
     
     private func deleteImageFromDocuments(_ fileName: String) {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         
         do {
