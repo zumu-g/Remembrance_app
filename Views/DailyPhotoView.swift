@@ -11,12 +11,12 @@ struct DailyPhotoView: View {
     @State private var showingPhotoImport = false
     
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                // Background with gradient theme support
-                settingsViewModel.getGradientBackground()
-                    .ignoresSafeArea()
-                
+        ZStack {
+            // Background must be outside GeometryReader to fill all safe areas
+            settingsViewModel.getGradientBackground()
+                .ignoresSafeArea()
+
+            GeometryReader { geometry in
                 VStack(spacing: 20) {
                     headerView
                     

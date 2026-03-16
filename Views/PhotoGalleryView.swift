@@ -22,7 +22,7 @@ struct PhotoGalleryView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 // Add gradient background
                 LinearGradient(
