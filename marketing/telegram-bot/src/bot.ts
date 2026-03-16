@@ -7,26 +7,29 @@ import * as db from './db.js';
 import { createPostizDraft, isPostizConfigured } from './postiz.js';
 import type { AwaitingInput, PostRecord } from './types.js';
 
-// Custom HTTPS agent that forces the resolved IP for api.telegram.org
-// Workaround for Node DNS resolution timeouts on some networks
+// Custom HTTPS agent with hardcoded IP for api.telegram.org
+// autoSelectFamily is disabled globally in index.ts
+import dns from 'dns';
 const telegramAgent = new https.Agent({
-  lookup: (hostname: string, options: any, callback: any) => {
-    if (typeof options === 'function') {
-      callback = options;
-      options = {};
+  keepAlive: true,
+  keepAliveMsecs: 10000,
+  family: 4,
+  lookup: (hostname: string, optionsOrCb: any, maybeCb?: any) => {
+    const cb = typeof optionsOrCb === 'function' ? optionsOrCb : maybeCb;
+    if (hostname === 'api.telegram.org' && typeof cb === 'function') {
+      cb(null, '149.154.166.110', 4);
+      return;
     }
-    if (hostname === 'api.telegram.org') {
-      callback(null, [{ address: '149.154.166.110', family: 4 }]);
+    if (maybeCb) {
+      dns.lookup(hostname, optionsOrCb, maybeCb);
     } else {
-      import('dns').then(dns => dns.lookup(hostname, options, callback));
+      dns.lookup(hostname, optionsOrCb);
     }
   },
-});
+} as any);
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!, {
-  telegram: {
-    agent: telegramAgent,
-  },
+  telegram: { agent: telegramAgent },
 });
 
 // Track conversation state for edits/rejections
@@ -55,13 +58,14 @@ bot.start((ctx) => {
     '🟢 <b>Remembrance Marketing Bot</b>\n\n' +
     'I help you review and approve social media posts.\n\n' +
     '<b>Commands:</b>\n' +
+    '/next — Submit next post from bank now\n' +
     '/pending — View pending posts\n' +
     '/stats — Post counts by status\n' +
     '/history — Recent posts\n' +
     '/report — Log post metrics\n' +
     '/insights — See what\'s working\n' +
     '/help — Show this message\n\n' +
-    'Posts arrive as drafts for your approval. Nothing publishes without you.',
+    'Posts auto-submit daily at 9:00 AM. Nothing publishes without your approval.',
     { parse_mode: 'HTML' }
   );
 });
@@ -69,18 +73,35 @@ bot.start((ctx) => {
 bot.help((ctx) => {
   ctx.reply(
     '<b>Commands:</b>\n' +
+    '/next — Submit next post from bank now\n' +
     '/pending — View all posts waiting for approval\n' +
     '/stats — See counts by status\n' +
     '/history — Last 10 posts\n' +
     '/post_ID — View a specific post (e.g. /post_3)\n' +
     '/report — Log metrics (e.g. /report 3 tiktok 50000 2300 145 890)\n' +
     '/insights — Performance analysis and recommendations\n\n' +
+    'Posts auto-submit daily at 9:00 AM.\n' +
     'When a post arrives, tap:\n' +
     '✅ <b>Approve</b> — sends to Blotato as DRAFT (you publish manually)\n' +
     '❌ <b>Reject</b> — asks for a reason\n' +
     '✏️ <b>Edit</b> — modify hook or caption',
     { parse_mode: 'HTML' }
   );
+});
+
+// /next — manually submit the next post from the bank
+bot.command('next', async (ctx) => {
+  const { submitNextPost } = await import('./scheduler.js');
+  await ctx.reply('Submitting next post from the bank...');
+  try {
+    const result = await submitNextPost();
+    if (!result.submitted) {
+      await ctx.reply(result.message);
+    }
+    // If submitted, notifyNewPost already sent the approval message
+  } catch (err) {
+    await ctx.reply(`Failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+  }
 });
 
 // /pending — list pending posts
