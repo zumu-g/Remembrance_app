@@ -229,18 +229,37 @@ To continue this project later:
 - Archive available at: `/tmp/365daysofMum_Final.xcarchive`
 
 ---
-**Last updated**: 2025-08-27  
-**Session focused on**: Performance optimization, timeline fixes, gallery enhancements, privacy protection  
-**Major Achievements**: 
-- ✅ **TIMELINE PERFECTION**: Fixed duplicate date mapping with prime number algorithm
-- ✅ **LIGHTNING PERFORMANCE**: Instant tab switching and gallery photo deletion  
-- ✅ **GALLERY POWER**: 500+ photo support with discrete delete and perfect persistence
-- ✅ **PRIVACY PROTECTION**: Launch screen overlay prevents content leak during app switching
-- ✅ **PRODUCTION STABILITY**: All critical bugs resolved, app crash-free and optimized
+**Last updated**: 2026-03-17
+**Current Status**: App in App Store. Marketing pipeline active. iOS 26 UI fixes applied.
 
-**Current Status**: 🚀 **ENHANCED & OPTIMIZED - READY FOR FINAL APP STORE SUBMISSION** 🚀
+## 🎯 Session Summary (Mar 17, 2026)
 
-## 🎯 Recent Session Summary (Aug 28, 2025 - Session 2)
+### Telegram Bot Fixes:
+- **Node.js DNS timeout for api.telegram.org** → FIXED: Multiple layers of workarounds
+  - `net.setDefaultAutoSelectFamily(false)` to disable Node 20 happy eyeballs
+  - `--no-network-family-autoselection --dns-result-order=ipv4first` CLI flags
+  - DNS monkey-patch in `index.ts` hardcoding api.telegram.org → 149.154.166.110
+  - Custom HTTPS agent with `family: 4` and hardcoded lookup in `bot.ts`
+- **Daily post scheduler** → IMPLEMENTED: `scheduler.ts`
+  - Auto-submits next post from bank at 9:00 AM daily (configurable via SCHEDULE_HOUR/SCHEDULE_MINUTE)
+  - Parses post-01.md through post-05.md (full posts) and post-06-to-20-hooks.md (15 hook posts)
+  - Tracks state in `scheduler-state.json` (lastPostedDate, postedIds)
+  - Auto-generates images via fal.ai if prompts exist
+  - `/next` command for manual post submission
+- **Bot startup**: `cd marketing/telegram-bot && npm run dev`
+
+### iOS 26 UI Fixes:
+- **White tab bar background on Today/Gallery/Quotes** → FIXED
+  - `DailyPhotoView.swift`: Moved gradient background outside `GeometryReader` into outer `ZStack` so `.ignoresSafeArea()` extends behind tab bar
+  - `PhotoGalleryView.swift`: Changed `NavigationView` → `NavigationStack` (deprecated NavigationView clips safe area)
+  - `QuotesView.swift`: Same `NavigationView` → `NavigationStack` fix
+  - `MainTabView.swift`: Added `UITabBarAppearance` with memorial green background, matte gold selection color
+
+### Pending:
+- Gallery and Quotes tabs need visual verification in simulator (Today tab confirmed fixed)
+- App Store resubmission still pending (Dec 2025 rejection fixes applied but not yet resubmitted)
+
+## 🎯 Previous Session Summary (Aug 28, 2025 - Session 2)
 This session completed critical fixes for photo persistence and app state management:
 
 ### Critical Issues Fixed:

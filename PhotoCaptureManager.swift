@@ -70,8 +70,8 @@ class PhotoCaptureManager: NSObject, ObservableObject {
     
     func saveImageToDocuments(_ image: UIImage) -> String? {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else { return nil }
-        
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
         let fileName = UUID().uuidString + ".jpg"
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         
@@ -85,7 +85,7 @@ class PhotoCaptureManager: NSObject, ObservableObject {
     }
     
     func loadImageFromDocuments(_ fileName: String) -> UIImage? {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
         return UIImage(contentsOfFile: fileURL.path)
     }
