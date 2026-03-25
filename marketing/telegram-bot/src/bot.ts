@@ -64,6 +64,9 @@ async function sendPostWithButtons(chatId: number, post: PostRecord): Promise<an
           { text: '✏️ Edit Hook', callback_data: `edit_hook_${post.id}` },
           { text: '✏️ Edit Caption', callback_data: `edit_caption_${post.id}` },
         ],
+        [
+          { text: '🚀 Direct Publish', callback_data: `direct_${post.id}` },
+        ],
       ],
     },
   });
@@ -89,8 +92,10 @@ bot.start(async (ctx) => {
     '/history — Recent posts\n' +
     '/report — Log post metrics\n' +
     '/insights — See what\'s working\n' +
+    '/learnings — Auto-analyze what\'s working\n' +
+    '/analytics — Live performance data\n' +
     '/help — Show this message\n\n' +
-    'Posts arrive as drafts for your approval. Nothing publishes without you.',
+    'Posts arrive for your approval. Tap ✅ Approve for Blotato drafts or 🚀 Direct Publish to go live instantly with auto-trending music.',
     { parse_mode: 'HTML' }
   );
 });
@@ -104,9 +109,12 @@ bot.help(async (ctx) => {
     '/history — Last 10 posts\n' +
     '/post_ID — View a specific post (e.g. /post_3)\n' +
     '/report — Log metrics (e.g. /report 3 tiktok 50000 2300 145 890)\n' +
-    '/insights — Performance analysis and recommendations\n\n' +
+    '/insights — Performance analysis and recommendations\n' +
+    '/learnings — Auto-analyze what\'s working\n' +
+    '/analytics — Live performance data from Upload-Post\n\n' +
     'When a post arrives, tap:\n' +
-    '✅ <b>Approve</b> — sends to Blotato as DRAFT (you publish manually)\n' +
+    '✅ <b>Approve</b> — sends to Blotato as DRAFT (you publish manually + add audio)\n' +
+    '🚀 <b>Direct Publish</b> — posts LIVE instantly with auto-trending music\n' +
     '❌ <b>Reject</b> — asks for a reason\n' +
     '✏️ <b>Edit</b> — modify hook or caption',
     { parse_mode: 'HTML' }
@@ -275,6 +283,62 @@ bot.command('insights', async (ctx) => {
   await sendMsg(ctx.chat.id, text, { parse_mode: 'HTML' });
 });
 
+// /learnings — generate and show auto-learnings
+bot.command('learnings', async (ctx) => {
+  const chatId = ctx.chat.id;
+  await telegramPost('sendChatAction', { chat_id: chatId, action: 'typing' });
+
+  try {
+    const { generateLearnings, getLearningsSummary } = await import('./learnings.js');
+    await generateLearnings();
+    const summary = getLearningsSummary();
+    await sendMsg(chatId, summary, { parse_mode: 'HTML' });
+  } catch (err: any) {
+    await sendMsg(chatId, `❌ Failed to generate learnings: ${err.message?.slice(0, 200)}`);
+  }
+});
+
+// /analytics — fetch live analytics from Upload-Post
+bot.command('analytics', async (ctx) => {
+  const chatId = ctx.chat.id;
+  await telegramPost('sendChatAction', { chat_id: chatId, action: 'typing' });
+
+  try {
+    const { isUploadPostConfigured, fetchAnalytics } = await import('./upload-post.js');
+
+    if (!isUploadPostConfigured()) {
+      await sendMsg(chatId, 'Upload-Post not configured. Set UPLOADPOST_TOKEN and UPLOADPOST_USER env vars.');
+      return;
+    }
+
+    const username = process.env.UPLOADPOST_PROFILE_USERNAME || 'remembranceapp';
+    const data = await fetchAnalytics(username, 7);
+
+    let text = `📊 <b>Analytics — @${username} (7 days)</b>\n\n`;
+    text += `👥 Followers: ${data.followers?.toLocaleString() || 'N/A'}\n`;
+    text += `👁 Total Impressions: ${data.totalImpressions?.toLocaleString() || 'N/A'}\n\n`;
+
+    if (data.posts && data.posts.length > 0) {
+      text += `<b>Recent Posts:</b>\n`;
+      data.posts.slice(0, 5).forEach((p, i) => {
+        text += `${i + 1}. ${p.views?.toLocaleString() || 0} views, ${p.likes?.toLocaleString() || 0} likes\n`;
+      });
+    }
+
+    if (data.dailyBreakdown && data.dailyBreakdown.length > 0) {
+      text += `\n<b>Daily Views:</b>\n`;
+      data.dailyBreakdown.forEach(d => {
+        const bar = '█'.repeat(Math.min(Math.round((d.views || d.impressions || 0) / 1000), 20));
+        text += `${d.date}: ${bar} ${(d.views || d.impressions || 0).toLocaleString()}\n`;
+      });
+    }
+
+    await sendMsg(chatId, text, { parse_mode: 'HTML' });
+  } catch (err: any) {
+    await sendMsg(chatId, `❌ Analytics fetch failed: ${err.message?.slice(0, 200)}`);
+  }
+});
+
 // --- Inline keyboard callbacks ---
 
 // Approve
@@ -334,6 +398,69 @@ bot.action(/^approve_(\d+)$/, async (ctx) => {
     }
   } else {
     await sendMsg(chatId, `✅ Post #${id} approved. Blotato not configured — publish manually.`);
+  }
+});
+
+// Direct publish via Upload-Post API
+bot.action(/^direct_(\d+)$/, async (ctx) => {
+  const id = parseInt(ctx.match![1], 10);
+  const chatId = ctx.chat?.id;
+  if (!chatId) return;
+
+  const post = db.getPost(id);
+  if (!post) {
+    await telegramPost('answerCallbackQuery', { callback_query_id: ctx.callbackQuery.id, text: 'Post not found.' });
+    return;
+  }
+
+  const { isUploadPostConfigured, publishDirect } = await import('./upload-post.js');
+
+  if (!isUploadPostConfigured()) {
+    await telegramPost('answerCallbackQuery', { callback_query_id: ctx.callbackQuery.id, text: 'Upload-Post not configured. Set UPLOADPOST_TOKEN and UPLOADPOST_USER.' });
+    return;
+  }
+
+  db.updateStatus(id, 'approved');
+  await telegramPost('answerCallbackQuery', { callback_query_id: ctx.callbackQuery.id, text: 'Publishing directly... 🚀' });
+
+  // Update the original message
+  if (ctx.callbackQuery.message) {
+    await telegramPost('editMessageText', {
+      chat_id: chatId,
+      message_id: ctx.callbackQuery.message.message_id,
+      text: formatPostPreview({ ...post, status: 'approved' }),
+      parse_mode: 'HTML',
+    }).catch(() => {});
+  }
+
+  try {
+    const imageUrls = post.image_urls ? JSON.parse(post.image_urls) as string[] : [];
+    const profileUsername = process.env.UPLOADPOST_PROFILE_USERNAME || 'remembranceapp';
+
+    const result = await publishDirect({
+      caption: `${post.hook}\n\n${post.caption}`,
+      imageUrls,
+      platform: (post.platform as 'tiktok' | 'instagram' | 'both') || 'both',
+      profileUsername,
+      autoAddMusic: true,
+    });
+
+    db.setPostizResult(id, result.requestId, JSON.stringify(result));
+    await sendMsg(chatId,
+      `🚀 Post #${id} published DIRECTLY to live feed!\n\n` +
+      `✅ Auto-trending music added on TikTok\n` +
+      `✅ Posted to ${result.platforms?.join(' + ') || post.platform}\n` +
+      `📊 Request ID: ${result.requestId}\n\n` +
+      `No manual steps needed! Track with:\n` +
+      `<code>/report ${id} tiktok VIEWS LIKES COMMENTS SHARES</code>`,
+      { parse_mode: 'HTML' }
+    );
+  } catch (err) {
+    db.setFailed(id);
+    const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+    await sendMsg(chatId,
+      `❌ Direct publish failed for Post #${id}: ${errorMsg}\n\nFalling back to Blotato draft with /post_${id}`
+    );
   }
 });
 

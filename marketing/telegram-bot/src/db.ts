@@ -242,4 +242,26 @@ export function getPostsWithMetrics(): Array<PostRecord & { total_views: number 
   `).all() as Array<PostRecord & { total_views: number }>;
 }
 
+export function getAllPublishedPostsWithMetrics(): Array<PostRecord & {
+  total_views: number; total_likes: number; total_shares: number; total_comments: number;
+  avg_engagement: number;
+}> {
+  return db.prepare(`
+    SELECT p.*,
+      COALESCE(SUM(m.views), 0) as total_views,
+      COALESCE(SUM(m.likes), 0) as total_likes,
+      COALESCE(SUM(m.shares), 0) as total_shares,
+      COALESCE(SUM(m.comments), 0) as total_comments,
+      CASE WHEN COALESCE(SUM(m.views), 0) > 0
+        THEN ROUND(CAST(COALESCE(SUM(m.likes), 0) + COALESCE(SUM(m.comments), 0) + COALESCE(SUM(m.shares), 0) AS REAL) / SUM(m.views), 4)
+        ELSE 0
+      END as avg_engagement
+    FROM posts p
+    LEFT JOIN metrics m ON p.id = m.post_id
+    WHERE p.status IN ('published', 'approved')
+    GROUP BY p.id
+    ORDER BY total_views DESC
+  `).all() as any[];
+}
+
 export { db };

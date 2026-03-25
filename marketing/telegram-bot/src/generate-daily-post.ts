@@ -298,11 +298,31 @@ export async function generateAndSubmitPost(force = false): Promise<void> {
     return;
   }
 
-  // Get next post (cycle through the bank)
-  const nextIndex = (state.lastPostIndex + 1) % POST_BANK.length;
-  const post = POST_BANK[nextIndex];
+  // If we've cycled through the entire bank, generate a new post dynamically
+  const hasCompletedFullCycle = state.postsGenerated >= POST_BANK.length;
 
-  console.log(`📝 Generating post ${nextIndex + 1}/${POST_BANK.length}`);
+  let post: typeof POST_BANK[number];
+  let nextIndex: number;
+
+  if (hasCompletedFullCycle) {
+    console.log(`📝 Post bank exhausted (${POST_BANK.length} posts used). Generating new content...`);
+    const { generateNewPost, loadLearnings } = await import('./post-generator.js');
+    const learnings = loadLearnings();
+    const generated = generateNewPost(learnings);
+    post = {
+      hook: generated.hook,
+      caption: generated.caption,
+      imagePrompts: generated.imagePrompts,
+      audioDirection: generated.audioDirection,
+    };
+    nextIndex = state.lastPostIndex; // keep index; we're past the bank
+    console.log(`   Category: ${generated.category} (generated)`);
+  } else {
+    nextIndex = (state.lastPostIndex + 1) % POST_BANK.length;
+    post = POST_BANK[nextIndex];
+    console.log(`📝 Generating post ${nextIndex + 1}/${POST_BANK.length}`);
+  }
+
   console.log(`   Hook: ${post.hook.slice(0, 60)}...`);
 
   await submitPost(post);

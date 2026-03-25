@@ -1,6 +1,7 @@
 // Fal.ai image generation client
-// Uses Flux Pro for high-quality photorealistic portrait images
+// Uses Recraft V3 for high-quality photorealistic portrait images
 // Downloads images immediately to avoid expired URLs
+// Supports visual coherence across carousel slides (Viraloop-inspired)
 
 import fs from 'fs';
 import path from 'path';
@@ -11,6 +12,13 @@ const IMAGES_DIR = path.join(__dirname, '..', 'images');
 
 const FAL_API_KEY = process.env.FAL_API_KEY || '';
 const FAL_API_URL = 'https://queue.fal.run';
+
+// Anti-stock aesthetic rules — prevents generic AI/stock imagery
+const ANTI_STOCK_RULES = [
+  'AVOID: shocked/surprised facial expressions, laptop-coffee setups, corporate handshakes, thumbs up, stock photo poses',
+  'AVOID: perfect symmetry, overly clean environments, artificial smiles, generic office settings',
+  'PREFER: natural imperfections, authentic emotions, lived-in spaces, real textures, candid moments',
+].join('. ');
 
 // Ensure images directory exists
 if (!fs.existsSync(IMAGES_DIR)) {
@@ -44,6 +52,34 @@ async function downloadImage(url: string, filepath: string): Promise<void> {
   if (!res.ok) throw new Error(`Failed to download image: ${res.status}`);
   const buffer = Buffer.from(await res.arrayBuffer());
   fs.writeFileSync(filepath, buffer);
+}
+
+/**
+ * Apply anti-stock aesthetic filter to a prompt.
+ * Appends rules that steer the model away from generic/stock imagery.
+ */
+function applyAntiStockFilter(prompt: string): string {
+  return `${prompt} ${ANTI_STOCK_RULES}`;
+}
+
+/**
+ * Extract a visual style reference from the first slide's prompt.
+ * Used to maintain coherence across carousel slides — slide 1 sets the
+ * visual foundation and subsequent slides reference it.
+ */
+function extractStyleReference(firstSlidePrompt: string): string {
+  // Extract lighting, color, and mood cues from the first slide's prompt
+  const lightingMatch = firstSlidePrompt.match(
+    /(warm|cold|soft|golden|morning|evening|natural|dim|bright)\s*(light|lighting|tones?|hour)/gi
+  );
+  const moodMatch = firstSlidePrompt.match(
+    /(emotional|peaceful|melancholic|warm|cozy|intimate|hopeful|bittersweet|nostalgic)/gi
+  );
+
+  const lighting = lightingMatch ? lightingMatch.join(', ') : 'warm natural lighting';
+  const mood = moodMatch ? [...new Set(moodMatch)].slice(0, 3).join(', ') : 'emotional';
+
+  return `[VISUAL COHERENCE: This is part of a carousel series. Match the visual style of the first slide: ${lighting} with ${mood} mood. Same color grading, film grain texture, and photographic technique throughout.]`;
 }
 
 async function generateImage(prompt: string, postId: number, slideIndex: number): Promise<string> {
@@ -107,14 +143,30 @@ async function generateImage(prompt: string, postId: number, slideIndex: number)
 
 export async function generateSlideImages(prompts: string[], postId: number = 0): Promise<string[]> {
   const paths: string[] = [];
+  let styleReference = '';
 
   for (let i = 0; i < prompts.length; i++) {
     try {
-      console.log(`Generating image: ${prompts[i].slice(0, 60)}...`);
-      const filepath = await generateImage(prompts[i], postId, i + 1);
+      let prompt = prompts[i];
+
+      // Apply anti-stock filter to all slides
+      prompt = applyAntiStockFilter(prompt);
+
+      // For slides 2+, add coherence reference to slide 1's style
+      if (i > 0 && styleReference) {
+        prompt = `${styleReference} ${prompt}`;
+      }
+
+      console.log(`🎨 Generating slide ${i + 1}/${prompts.length}: ${prompts[i].slice(0, 60)}...`);
+      const filepath = await generateImage(prompt, postId, i + 1);
       paths.push(filepath);
+
+      // After slide 1, extract style reference for coherence
+      if (i === 0) {
+        styleReference = extractStyleReference(prompts[0]);
+      }
     } catch (err) {
-      console.error(`Image generation failed for prompt: ${prompts[i].slice(0, 60)}...`, err);
+      console.error(`Image generation failed for slide ${i + 1}: ${prompts[i].slice(0, 60)}...`, err);
     }
   }
 
