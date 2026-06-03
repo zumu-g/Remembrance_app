@@ -1,5 +1,5 @@
 // Fal.ai image generation client
-// Uses Recraft V3 for high-quality photorealistic portrait images
+// Uses FLUX 1.1 Pro Ultra (raw mode) for natural, candid photorealism
 // Downloads images immediately to avoid expired URLs
 // Supports visual coherence across carousel slides (Viraloop-inspired)
 
@@ -19,6 +19,37 @@ const ANTI_STOCK_RULES = [
   'AVOID: perfect symmetry, overly clean environments, artificial smiles, generic office settings',
   'PREFER: natural imperfections, authentic emotions, lived-in spaces, real textures, candid moments',
 ].join('. ');
+
+// Photographic style packs — every pack is fully photorealistic, but the
+// camera/film, lens, lighting, grade and texture differ so the *look* changes
+// markedly from post to post. One pack is chosen per post (coherent across all
+// slides of a carousel) and rotated by post id so consecutive days differ.
+const STYLE_PACKS: string[] = [
+  'Shot on 35mm film, Kodak Portra 400, warm window light, shallow depth of field, fine natural grain.',
+  'Shot on Fujifilm Superia 400, cool overcast daylight, candid documentary framing, subtle green colour cast.',
+  'Black-and-white Ilford HP5 film, high contrast, deep shadows, visible grain, photojournalistic.',
+  'Cinematic digital capture, teal-and-amber colour grade, anamorphic lens flare, shallow focus, filmic.',
+  'Medium-format Hasselblad, soft diffused window light, creamy bokeh, ultra-fine detail, gentle tones.',
+  'Vintage 1970s Kodachrome look, faded warm tones, gentle vignette, nostalgic grain.',
+  'Leica M digital, natural available light, crisp micro-contrast, honest street-photography realism.',
+  'CineStill 800T film, tungsten interior light, halated highlights, moody low light, fine grain.',
+  'Golden-hour backlight, warm rim light, 50mm f/1.4, soft natural lens flare, shallow focus.',
+  'Soft cloudy daylight, muted desaturated palette, Scandinavian minimal mood, 35mm film.',
+  'Harsh midday sun, strong directional shadows, high clarity, crisp editorial realism.',
+  'Lamp-lit or candle-lit interior, warm low-key chiaroscuro lighting, soft film grain.',
+  'Blue-hour early morning, cool tones, soft mist, cinematic stillness, gentle grain.',
+  'Polaroid-style instant film, soft focus, washed pastel tones, faded contrast.',
+];
+
+/**
+ * Pick the photographic style pack for a post. Rotating by post id means
+ * consecutive posts (ids increment daily) never repeat a pack until all have
+ * been used — no extra state needed. All slides in one post share the pack.
+ */
+function styleForPost(postId: number): { index: number; pack: string } {
+  const index = ((postId % STYLE_PACKS.length) + STYLE_PACKS.length) % STYLE_PACKS.length;
+  return { index, pack: STYLE_PACKS[index] };
+}
 
 // Ensure images directory exists
 if (!fs.existsSync(IMAGES_DIR)) {
@@ -82,20 +113,19 @@ function extractStyleReference(firstSlidePrompt: string): string {
   return `[VISUAL COHERENCE: This is part of a carousel series. Match the visual style of the first slide: ${lighting} with ${mood} mood. Same color grading, film grain texture, and photographic technique throughout.]`;
 }
 
-async function generateImage(prompt: string, postId: number, slideIndex: number): Promise<string> {
-  // Enhance prompt for photorealism — avoid AI tells
-  const enhancedPrompt = `${prompt} Photograph taken on 35mm film, Kodak Portra 400, natural window light, shallow depth of field, slight motion blur, dust particles visible, imperfect framing, real candid moment captured.`;
+async function generateImage(prompt: string, postId: number, slideIndex: number, stylePack: string): Promise<string> {
+  // Enhance prompt with the post's chosen photographic style + realism cues
+  const enhancedPrompt = `${prompt} ${stylePack} Imperfect framing, real candid moment captured, authentic textures.`;
 
-  // Submit to queue — using Recraft V3 for maximum photorealism
-  const submitRes = await falFetch(`${FAL_API_URL}/fal-ai/recraft-v3`, {
+  // Submit to queue — FLUX 1.1 Pro Ultra in raw mode for natural photorealism
+  const submitRes = await falFetch(`${FAL_API_URL}/fal-ai/flux-pro/v1.1-ultra`, {
     method: 'POST',
     body: JSON.stringify({
       prompt: enhancedPrompt,
-      image_size: {
-        width: 1024,
-        height: 1536,
-      },
-      style: 'realistic_image',
+      aspect_ratio: '2:3', // portrait, matches the previous 1024x1536 framing
+      num_images: 1,
+      output_format: 'jpeg',
+      raw: true, // less processed, more candid/natural look
     }),
   });
 
@@ -145,6 +175,11 @@ export async function generateSlideImages(prompts: string[], postId: number = 0)
   const paths: string[] = [];
   let styleReference = '';
 
+  // One photographic style pack per post — keeps the carousel coherent while
+  // making the look change day to day.
+  const { index: styleIndex, pack: stylePack } = styleForPost(postId);
+  console.log(`🎞️  Style pack #${styleIndex} for post ${postId}: ${stylePack}`);
+
   for (let i = 0; i < prompts.length; i++) {
     try {
       let prompt = prompts[i];
@@ -158,7 +193,7 @@ export async function generateSlideImages(prompts: string[], postId: number = 0)
       }
 
       console.log(`🎨 Generating slide ${i + 1}/${prompts.length}: ${prompts[i].slice(0, 60)}...`);
-      const filepath = await generateImage(prompt, postId, i + 1);
+      const filepath = await generateImage(prompt, postId, i + 1, stylePack);
       paths.push(filepath);
 
       // After slide 1, extract style reference for coherence

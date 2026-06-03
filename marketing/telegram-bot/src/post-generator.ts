@@ -10,6 +10,10 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LEARNINGS_FILE = path.join(__dirname, '..', 'learnings.json');
+const VARIETY_FILE = path.join(__dirname, '..', 'image-variety-state.json');
+
+// How many recently-used scenes to remember per slot (avoid near-term reuse).
+const VARIETY_MEMORY = 8;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -127,24 +131,51 @@ const HASHTAG_SETS: string[] = [
   '#griefjourney #missingmum #missingdad #remembrance #memorial',
 ];
 
+// Scene templates describe COMPOSITION/CONTENT only — the photographic style
+// (film, lens, lighting, grade) is owned entirely by image-gen.ts so the look
+// can rotate independently. Keep each pool's emotional role.
 const SLIDE_TEMPLATES = {
   slide1_emotional: [
-    'Warm, soft-lit photograph of a person sitting by a window in morning light, looking at a phone with a gentle expression. Muted warm tones, cozy setting, golden hour light. Portrait 1024x1536. Photorealistic, editorial style.',
-    'Close-up of hands holding a faded photograph, soft natural light, slightly out of focus background. Emotional, nostalgic tone. Warm muted colours. Portrait 1024x1536. Photorealistic.',
-    'A person sitting quietly with a cup of tea, morning light streaming in, looking at an old photo on their phone. Warm, reflective atmosphere. Portrait 1024x1536. Photorealistic.',
-    'A bedside table with a framed photo, a candle, and a phone showing a memorial app. Intimate, warm lighting. Portrait 1024x1536. Photorealistic.',
+    'A woman in her 50s sitting by a kitchen window holding a cup of tea, looking at a phone with a gentle, faraway expression. Portrait orientation.',
+    'Close-up of weathered hands holding a small faded photograph, the rest of the room out of focus behind. Portrait orientation.',
+    'A young man sitting on the edge of an unmade bed, phone in hand, head slightly bowed, quiet and reflective. Portrait orientation.',
+    'A bedside table with a framed photo, an unlit candle and a phone resting against a book. Soft domestic clutter. Portrait orientation.',
+    'An elderly man in a worn armchair by a window, looking down at a phone screen, a knitted blanket over his knees. Portrait orientation.',
+    'A woman standing at a rain-streaked window, phone held to her chest, gazing outside. Portrait orientation.',
+    'Over-the-shoulder view of a person in a garden, sitting on a bench, looking at a photo on their phone, plants around them. Portrait orientation.',
+    'A teenage girl lying on her stomach on a bedroom floor, propped on elbows, looking at an old photo on her phone. Portrait orientation.',
+    'A man at a cluttered kitchen table early morning, coffee going cold, scrolling slowly through phone photos. Portrait orientation.',
+    'Profile of a woman sitting on a sofa in the evening, only a lamp lighting her face, phone glowing in her hands. Portrait orientation.',
+    'A person sitting in a parked car, phone resting on the steering wheel, looking at a photo before going inside. Portrait orientation.',
+    'Close-up from behind of someone holding up a phone, an old portrait photo visible on the screen, soft domestic background. Portrait orientation.',
   ],
   slide2_struggle: [
-    'A person scrolling through thousands of phone photos, looking overwhelmed. Blue-tinted lighting, feeling of being lost in memories. Portrait 1024x1536. Photorealistic.',
-    'Phone screen showing "Storage Full" warning, a finger hovering over delete. Tense, cold lighting. Portrait 1024x1536. Photorealistic.',
-    'A person lying in bed staring at the ceiling, morning light barely coming through curtains. Feeling of emptiness. Cool tones. Portrait 1024x1536. Photorealistic.',
-    'An empty chair at a kitchen table, untouched breakfast, morning light. Feeling of absence. Cool blue-grey tones. Portrait 1024x1536. Photorealistic.',
+    'A person hunched over a phone scrolling endlessly through a dense grid of photos, expression overwhelmed. Portrait orientation.',
+    'A phone screen showing a "Storage Almost Full" warning, a thumb hovering over a delete prompt, tense framing. Portrait orientation.',
+    'A person lying in bed on their side staring at the ceiling, curtains barely letting light through, sense of emptiness. Portrait orientation.',
+    'An empty chair at a kitchen table with an untouched breakfast and a cold cup, nobody in frame. Portrait orientation.',
+    'A cluttered desk with scattered printed photos and a phone, hands resting still among them, unsure where to start. Portrait orientation.',
+    'A person sitting alone on the floor with their back against a wardrobe, phone face-down beside them. Portrait orientation.',
+    'A wardrobe half open showing folded clothes, a hand resting on a sleeve, the owner gone. Portrait orientation.',
+    'A person standing alone on a quiet bus, phone in hand, looking out the window, blurred city passing. Portrait orientation.',
+    'A cloud-backup "unable to access" message on a phone screen, a frustrated hand gripping the device. Portrait orientation.',
+    'A shoebox of old photographs tipped open on a bed, a person sitting beside it not touching them. Portrait orientation.',
+    'A doorway into a now-empty room, light falling across the floor, a person paused on the threshold. Portrait orientation.',
+    'A person at a sink washing one mug, staring at the second mug still on the rack. Portrait orientation.',
   ],
   slide3_hope: [
-    'A person smiling at their phone in warm morning light, seeing a memorial photo. Warm golden tones, relief and comfort. Portrait 1024x1536. Photorealistic.',
-    'A phone screen glowing warmly in dim lighting, showing a beautiful memorial photo with a quote. Warm, hopeful tones. Portrait 1024x1536. Photorealistic.',
-    'A person walking through a park, phone in hand, peaceful expression. Golden hour light, trees, memorial green accents. Portrait 1024x1536. Photorealistic.',
-    'Two phones side by side on a kitchen table, both showing a memorial photo app. Morning light, coffee cups nearby. Warm tones. Portrait 1024x1536. Photorealistic.',
+    'A person smiling softly at their phone, shoulders relaxing, a memorial photo visible on the screen. Portrait orientation.',
+    'A phone resting on a windowsill showing a warm portrait photo and a short quote, a plant beside it. Portrait orientation.',
+    'A person walking a tree-lined path, phone in hand, calm and at peace, dappled light around them. Portrait orientation.',
+    'Two phones side by side on a kitchen table both showing the same memorial photo, two coffee cups nearby. Portrait orientation.',
+    'A parent and a small child at a breakfast table looking together at a phone, the child pointing at the screen. Portrait orientation.',
+    'A person lighting a single candle beside a framed photo, a small genuine smile on their face. Portrait orientation.',
+    'An older woman in a sunny garden holding her phone up, showing a photo to someone off-frame, laughing gently. Portrait orientation.',
+    'A close-up of hands holding a phone to the chest, eyes closed, a peaceful expression, soft light. Portrait orientation.',
+    'A person on a sofa wrapped in a blanket, phone glowing warmly, a content and settled expression. Portrait orientation.',
+    'A morning kitchen scene, a person pausing mid-routine to look at a photo on their phone, a faint smile. Portrait orientation.',
+    'Two sisters on a sofa, one showing the other a photo on her phone, both leaning in. Portrait orientation.',
+    'A person at a desk placing their phone in a stand showing a portrait photo, ready to start the day. Portrait orientation.',
   ],
 };
 
@@ -177,6 +208,40 @@ function fillTemplate(template: string, usedFills?: Map<string, string>): string
     usedFills?.set(key, chosen);
     return chosen;
   });
+}
+
+// ---------------------------------------------------------------------------
+// Scene variety — persisted anti-repeat
+// ---------------------------------------------------------------------------
+
+type VarietyState = Record<string, string[]>; // slot -> recently used scenes
+
+function loadVariety(): VarietyState {
+  try {
+    return JSON.parse(fs.readFileSync(VARIETY_FILE, 'utf-8')) as VarietyState;
+  } catch {
+    return {};
+  }
+}
+
+function saveVariety(state: VarietyState): void {
+  try {
+    fs.writeFileSync(VARIETY_FILE, JSON.stringify(state, null, 2));
+  } catch {
+    // best-effort; variety persistence is non-critical
+  }
+}
+
+/**
+ * Pick a scene from a pool, avoiding ones used recently for this slot (persisted
+ * across restarts). Falls back to a plain random pick if everything is recent.
+ */
+function pickFreshScene(slot: string, pool: string[], state: VarietyState): string {
+  const recent = state[slot] ?? [];
+  const fresh = pool.filter((s) => !recent.includes(s));
+  const chosen = fresh.length > 0 ? pick(fresh) : pick(pool);
+  state[slot] = [...recent, chosen].slice(-VARIETY_MEMORY);
+  return chosen;
 }
 
 // ---------------------------------------------------------------------------
@@ -286,12 +351,14 @@ export function generateNewPost(learnings?: Learnings | null): GeneratedPost {
   // Fill any remaining template vars in caption
   caption = fillTemplate(caption, fills);
 
-  // Generate image prompts (3 slides)
+  // Generate image prompts (3 slides), avoiding recently-used scenes per slot
+  const variety = loadVariety();
   const imagePrompts = [
-    pick(SLIDE_TEMPLATES.slide1_emotional),
-    pick(SLIDE_TEMPLATES.slide2_struggle),
-    pick(SLIDE_TEMPLATES.slide3_hope),
+    pickFreshScene('slide1_emotional', SLIDE_TEMPLATES.slide1_emotional, variety),
+    pickFreshScene('slide2_struggle', SLIDE_TEMPLATES.slide2_struggle, variety),
+    pickFreshScene('slide3_hope', SLIDE_TEMPLATES.slide3_hope, variety),
   ];
+  saveVariety(variety);
 
   const audioDirection = pick(AUDIO_DIRECTIONS);
 
