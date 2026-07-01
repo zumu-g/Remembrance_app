@@ -1,0 +1,38 @@
+{
+  "" : {
+    "diagnostics" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/Remembrance-master.dia",
+    "emit-module-dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/Remembrance-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/Remembrance-master-emit-module.dia",
+    "swift-dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/Remembrance-master.swiftdeps"
+  },
+  "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/ContentView.swift" : {
+    "const-values" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/RemembranceApp.swift" : {
+    "const-values" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/RemembranceApp.swiftconstvalues",
+    "dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/RemembranceApp.d",
+    "diagnostics" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/RemembranceApp.dia",
+    "index-unit-output-path" : "/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/RemembranceApp.o",
+    "llvm-bc" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/RemembranceApp.bc",
+    "object" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/RemembranceApp.o",
+    "swift-dependencies" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/RemembranceApp.swiftdeps",
+    "swiftmodule" : "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/build/Remembrance.build/Debug-iphonesimulator/Remembrance.build/Objects-normal/arm64/RemembranceApp~partial.swiftmodule"
+  }
+}

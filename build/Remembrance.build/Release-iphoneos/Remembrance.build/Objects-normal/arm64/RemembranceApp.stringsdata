@@ -1,0 +1,160 @@
+{
+  "source": "/Users/stuartgrant_mbp13/Library/Mobile Documents/com~apple~CloudDocs/Remembrance_app/Remembrance/RemembranceApp.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "GALLERY"
+      },
+      {
+        "comment": "",
+        "key": "Manage photos and quotes for 365 days"
+      },
+      {
+        "comment": "",
+        "key": "No photos uploaded yet"
+      },
+      {
+        "comment": "",
+        "key": "Select Multiple Photos"
+      },
+      {
+        "comment": "",
+        "key": "Add photos for your 365-day journey"
+      },
+      {
+        "comment": "",
+        "key": "YOUR COLLECTION"
+      },
+      {
+        "comment": "",
+        "key": "%lld photos in collection"
+      },
+      {
+        "comment": "",
+        "key": "%lld"
+      },
+      {
+        "comment": "",
+        "key": "Add More Photos"
+      },
+      {
+        "comment": "",
+        "key": "No photos yet"
+      },
+      {
+        "comment": "",
+        "key": "Add photos in the Gallery tab to see today's memory"
+      },
+      {
+        "comment": "",
+        "key": "Day %lld of 365"
+      },
+      {
+        "comment": "",
+        "key": "MEMORY TIMELINE"
+      },
+      {
+        "comment": "",
+        "key": "Your journey of remembrance"
+      },
+      {
+        "comment": "",
+        "key": "Memory Photo"
+      },
+      {
+        "comment": "",
+        "key": "No memory added yet"
+      },
+      {
+        "comment": "",
+        "key": "SETTINGS"
+      },
+      {
+        "comment": "",
+        "key": "DAILY REMINDERS"
+      },
+      {
+        "comment": "",
+        "key": ""
+      },
+      {
+        "comment": "",
+        "key": "Enable Daily Reminders"
+      },
+      {
+        "comment": "",
+        "key": "Get reminded to capture today's memory"
+      },
+      {
+        "comment": "",
+        "key": "Reminder Time"
+      },
+      {
+        "comment": "",
+        "key": "Send Test Notification"
+      },
+      {
+        "comment": "",
+        "key": "APP INFORMATION"
+      },
+      {
+        "comment": "",
+        "key": "SUPPORT"
+      },
+      {
+        "comment": "",
+        "key": "Select Reminder Time"
+      },
+      {
+        "comment": "",
+        "key": "Time"
+      },
+      {
+        "comment": "",
+        "key": "Cancel"
+      },
+      {
+        "comment": "",
+        "key": "Save"
+      },
+      {
+        "comment": "",
+        "key": "Daily Memory"
+      },
+      {
+        "comment": "",
+        "key": "TODAY'S MEMORY"
+      },
+      {
+        "comment": "",
+        "key": "No photo for today"
+      },
+      {
+        "comment": "",
+        "key": "💝"
+      },
+      {
+        "comment": "",
+        "key": "Close"
+      },
+      {
+        "comment": "",
+        "key": "Today"
+      },
+      {
+        "comment": "",
+        "key": "Memories"
+      },
+      {
+        "comment": "",
+        "key": "Gallery"
+      },
+      {
+        "comment": "",
+        "key": "Settings"
+      }
+    ]
+  },
+  "version": 1
+}
