@@ -5,7 +5,21 @@ import { authMiddleware } from './utils/auth.js';
 import { formatPostPreview, formatPostSummary } from './utils/format.js';
 import * as db from './db.js';
 import { createPostizDraft, isPostizConfigured } from './postiz.js';
+import { generateSlideImages, isFalConfigured, fallbackImagePrompt } from './image-gen.js';
 import type { AwaitingInput, PostRecord } from './types.js';
+
+// TikTok/Instagram require images. Older posts (hook-bank) were created without
+// any — generate them on demand at publish time so /post_ID retries recover.
+async function ensureImages(post: PostRecord): Promise<string[]> {
+  const existing = post.image_urls ? JSON.parse(post.image_urls) as string[] : [];
+  if (existing.length > 0 || !isFalConfigured()) return existing;
+  const prompts = post.image_prompts
+    ? JSON.parse(post.image_prompts) as string[]
+    : [fallbackImagePrompt(post.hook)];
+  const urls = await generateSlideImages(prompts, post.id);
+  if (urls.length > 0) db.updateImageUrls(post.id, urls);
+  return urls;
+}
 
 // IPv4-safe Telegram API helper — bypasses node-fetch entirely
 export function telegramPost(method: string, body: Record<string, unknown>): Promise<any> {
@@ -369,7 +383,7 @@ bot.action(/^approve_(\d+)$/, async (ctx) => {
   // Try to send to Postiz
   if (isPostizConfigured()) {
     try {
-      const imageUrls = post.image_urls ? JSON.parse(post.image_urls) as string[] : [];
+      const imageUrls = await ensureImages(post);
       const integrationIds = getIntegrationIds(post.platform);
 
       const result = await createPostizDraft({
@@ -434,7 +448,7 @@ bot.action(/^direct_(\d+)$/, async (ctx) => {
   }
 
   try {
-    const imageUrls = post.image_urls ? JSON.parse(post.image_urls) as string[] : [];
+    const imageUrls = await ensureImages(post);
     const profileUsername = process.env.UPLOADPOST_PROFILE_USERNAME || 'remembranceapp';
 
     const result = await publishDirect({

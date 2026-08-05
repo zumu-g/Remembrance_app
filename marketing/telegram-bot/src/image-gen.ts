@@ -208,6 +208,16 @@ export async function generateSlideImages(prompts: string[], postId: number = 0)
   return paths;
 }
 
+// Hook-bank posts ship without image prompts, but TikTok/Instagram require at
+// least one image — derive a single on-theme prompt from the hook.
+export function fallbackImagePrompt(hook: string): string {
+  return (
+    `A quiet, candid moment of remembrance inspired by: "${hook}". ` +
+    'A person at a kitchen table in soft morning light, holding a phone showing an old family photo, ' +
+    'a cup of tea nearby, emotional and warm, lived-in home, natural light.'
+  );
+}
+
 export function isFalConfigured(): boolean {
   return Boolean(FAL_API_KEY);
 }

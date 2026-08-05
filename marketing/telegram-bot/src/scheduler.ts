@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createPost, getPost, getRecentPosts, updateImageUrls } from './db.js';
 import { notifyNewPost } from './bot.js';
-import { generateSlideImages, isFalConfigured } from './image-gen.js';
+import { generateSlideImages, isFalConfigured, fallbackImagePrompt } from './image-gen.js';
 import type { DraftPost } from './types.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -159,7 +159,7 @@ export async function submitNextPost(): Promise<{ submitted: boolean; message: s
   const draft: DraftPost = {
     hook: post.hook,
     caption: fullCaption,
-    imagePrompts: post.imagePrompts.length > 0 ? post.imagePrompts : undefined,
+    imagePrompts: post.imagePrompts.length > 0 ? post.imagePrompts : [fallbackImagePrompt(post.hook)],
     audioDirection: post.audioDirection || undefined,
     notes: `Auto-submitted from post bank: ${post.title}`,
     platform: 'both',
